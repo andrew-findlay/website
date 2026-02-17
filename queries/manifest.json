@@ -1,0 +1,151 @@
+{
+  "queries": [
+    {
+      "id": "profile_overview",
+      "file": "profile_overview.sql",
+      "title": "Profile Overview",
+      "description": "Top-level profile summary and contact metadata.",
+      "surface": "Explorer",
+      "readOnly": true,
+      "contractName": "v_profile_overview",
+      "contractVersion": "1.0.0",
+      "resultShape": "table",
+      "tags": ["overview", "profile"],
+      "paramsSchema": {
+        "person_id": {
+          "type": "number",
+          "default": 1,
+          "minimum": 1,
+          "maximum": 999999,
+          "description": "Person identifier for profile lookup."
+        }
+      }
+    },
+    {
+      "id": "experience_timeline",
+      "file": "experience_timeline.sql",
+      "title": "Experience Timeline",
+      "description": "Career timeline with role achievements.",
+      "surface": "Insights",
+      "readOnly": true,
+      "contractName": "v_experience_timeline",
+      "contractVersion": "1.0.0",
+      "resultShape": "table",
+      "tags": ["insights", "timeline"],
+      "paramsSchema": {
+        "person_id": {
+          "type": "number",
+          "default": 1,
+          "minimum": 1,
+          "maximum": 999999,
+          "description": "Person identifier for timeline lookup."
+        },
+        "limit": {
+          "type": "number",
+          "default": 25,
+          "minimum": 1,
+          "maximum": 200,
+          "description": "Maximum number of timeline rows returned."
+        }
+      }
+    },
+    {
+      "id": "skills_matrix",
+      "file": "skills_matrix.sql",
+      "title": "Skills Matrix",
+      "description": "Skill proficiency by category.",
+      "surface": "Insights",
+      "readOnly": true,
+      "contractName": "v_skills_matrix",
+      "contractVersion": "1.0.0",
+      "resultShape": "table",
+      "tags": ["insights", "skills"],
+      "paramsSchema": {
+        "person_id": {
+          "type": "number",
+          "default": 1,
+          "minimum": 1,
+          "maximum": 999999,
+          "description": "Person identifier for skills lookup."
+        },
+        "min_proficiency": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Minimum proficiency threshold (0-100)."
+        }
+      }
+    },
+    {
+      "id": "education_history",
+      "file": "education_history.sql",
+      "title": "Education History",
+      "description": "Education and credentials timeline.",
+      "surface": "CV",
+      "readOnly": true,
+      "contractName": "v_education_history",
+      "contractVersion": "1.0.0",
+      "resultShape": "table",
+      "tags": ["cv", "education"],
+      "paramsSchema": {
+        "person_id": {
+          "type": "number",
+          "default": 1,
+          "minimum": 1,
+          "maximum": 999999,
+          "description": "Person identifier for education lookup."
+        }
+      }
+    },
+    {
+      "id": "projects_showcase",
+      "file": "projects_showcase.sql",
+      "title": "Projects Showcase",
+      "description": "Portfolio projects with linked skills.",
+      "surface": "CV",
+      "readOnly": true,
+      "contractName": "v_projects_showcase",
+      "contractVersion": "1.0.0",
+      "resultShape": "table",
+      "tags": ["cv", "projects"],
+      "paramsSchema": {
+        "person_id": {
+          "type": "number",
+          "default": 1,
+          "minimum": 1,
+          "maximum": 999999,
+          "description": "Person identifier for projects lookup."
+        },
+        "limit": {
+          "type": "number",
+          "default": 10,
+          "minimum": 1,
+          "maximum": 100,
+          "description": "Maximum number of projects returned."
+        }
+      }
+    },
+    {
+      "id": "master_cv",
+      "file": "master_cv.sql",
+      "title": "Master CV",
+      "description": "Stable CV JSON contract consumed by UI surfaces.",
+      "surface": "CV",
+      "readOnly": true,
+      "contractName": "v_master_cv",
+      "contractVersion": "1.0.0",
+      "resultShape": "json_contract",
+      "tags": ["cv", "contract"],
+      "paramsSchema": {
+        "person_id": {
+          "type": "number",
+          "default": 1,
+          "minimum": 1,
+          "maximum": 999999,
+          "description": "Person identifier for master CV contract."
+        }
+      }
+    }
+  ]
+}
