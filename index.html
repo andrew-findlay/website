@@ -10,32 +10,6 @@
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            colors: {
-              'app-bg': '#0B1020',
-              'panel-bg': '#121A31',
-              'panel-highlight': '#1B2540',
-              'border-subtle': '#2E3A5B',
-              primary: '#4C82FF',
-              'text-main': '#E7EEFF',
-              'text-dim': '#95A3C9'
-            },
-            fontFamily: {
-              sans: ['Space Grotesk', 'sans-serif'],
-              mono: ['IBM Plex Mono', 'monospace']
-            },
-            boxShadow: {
-              glow: '0 8px 50px rgba(76,130,255,0.2)'
-            }
-          }
-        }
-      };
-    </script>
   </head>
   <body class="h-full bg-app-bg text-text-main font-sans antialiased">
     <div id="root" class="h-full"></div>

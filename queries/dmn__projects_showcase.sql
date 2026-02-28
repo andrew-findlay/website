@@ -7,7 +7,7 @@ SELECT
   start_year,
   end_year,
   skills
-FROM v_projects_showcase
+FROM dmn__projects_showcase
 WHERE person_id = {{person_id}}
 ORDER BY project_order
 LIMIT {{limit}};

@@ -180,79 +180,139 @@ export const INIT_SQL: string[] = [
   `INSERT INTO person VALUES (
     1,
     'Andrew Findlay',
-    'Senior Data Engineer',
-    'Data engineer focused on reliable analytics systems, SQL platform design, and developer experience.',
-    'United States',
-    'manual',
+    'Analytics Engineer',
+    'Analytics Engineer focused on developing data-led solutions that improve outcomes for customers and business stakeholders. Experienced in cross-functional delivery and translating complex technical concepts for non-technical audiences.',
+    'London, United Kingdom',
+    'cv',
     NOW()
   );`,
   `INSERT INTO contact_method VALUES
-    (1, 1, 'email', 'andrew@example.com', 'Work email', 1, 'manual', NOW()),
-    (2, 1, 'website', 'https://andrewfindlay.dev', 'Personal site', 2, 'manual', NOW());`,
+    (1, 1, 'email', 'hello@andrewfindlay.io', 'Email', 1, 'cv', NOW()),
+    (2, 1, 'website', 'https://www.andrewfindlay.io', 'Website', 2, 'cv', NOW()),
+    (3, 1, 'phone', '07792 300766', 'Mobile', 3, 'cv', NOW());`,
   `INSERT INTO social_profile VALUES
-    (1, 1, 'LinkedIn', 'https://linkedin.com/in/andrewfindlay', '@andrewfindlay', 1, 'linkedin', NOW()),
-    (2, 1, 'GitHub', 'https://github.com/andrewfindlay', '@andrewfindlay', 2, 'manual', NOW());`,
+    (1, 1, 'GitHub', 'https://github.com/andrewfindlay', 'andrewfindlay', 1, 'manual', NOW()),
+    (2, 1, 'LinkedIn', 'https://linkedin.com/in/andrew-findlay', 'andrew-findlay', 2, 'manual', NOW());`,
   `INSERT INTO employer VALUES
-    (1, 'CloudScale Analytics', 'https://cloudscale.example', 'Remote', 'cv', NOW()),
-    (2, 'Northwind Data', 'https://northwind.example', 'Seattle, WA', 'cv', NOW()),
-    (3, 'Acme Labs', 'https://acme.example', 'Portland, OR', 'linkedin', NOW());`,
+    (1, 'Tasman Analytics', NULL, 'London, UK', 'cv', NOW()),
+    (2, 'The Orchard', NULL, 'London, UK', 'cv', NOW()),
+    (3, 'TotallyMoney', NULL, 'London, UK', 'cv', NOW()),
+    (4, 'Start Up Loans', NULL, 'London, UK', 'cv', NOW());`,
   `INSERT INTO role VALUES
-    (1, 1, 1, 'Senior Data Engineer', 'Full-time', DATE '2022-02-01', 'month', NULL, NULL, TRUE, 'Own the shared data platform and SQL developer tooling.', 1, 'cv', NOW()),
-    (2, 1, 2, 'Data Engineer', 'Full-time', DATE '2019-06-01', 'month', DATE '2022-01-01', 'month', FALSE, 'Led modernization from batch ETL to near real-time pipelines.', 2, 'cv', NOW()),
-    (3, 1, 3, 'Analytics Engineer', 'Full-time', DATE '2017-01-01', 'month', DATE '2019-05-01', 'month', FALSE, 'Built foundational dimensional models and BI datasets.', 3, 'linkedin', NOW());`,
+    (1, 1, 1, 'Analytics Engineer', 'Contract', DATE '2025-07-01', 'month', NULL, NULL, TRUE, 'Implemented modern data stacks on greenfield engagements, covering ingestion, transformation, and serving layers.', 1, 'cv', NOW()),
+    (2, 1, 2, 'Analytics Engineer', 'Full-time', DATE '2023-03-01', 'month', DATE '2025-06-01', 'month', FALSE, 'Led analytics engineering delivery across dbt, Looker, and Snowflake with a focus on reliability, performance, and stakeholder enablement.', 2, 'cv', NOW()),
+    (3, 1, 3, 'Senior Data Analyst', 'Full-time', DATE '2021-09-01', 'month', DATE '2022-09-01', 'month', FALSE, 'Modernised analytics workflows with dbt while mentoring experimentation practice across the analytics team.', 3, 'cv', NOW()),
+    (4, 1, 3, 'Product Data Analyst', 'Full-time', DATE '2018-10-01', 'month', DATE '2021-09-01', 'month', FALSE, 'Embedded experimentation and product analytics in cross-functional squads and replaced legacy spreadsheet reporting.', 4, 'cv', NOW()),
+    (5, 1, 4, 'Risk & Data Analyst', 'Full-time', DATE '2017-09-01', 'month', DATE '2018-09-01', 'month', FALSE, 'Produced automated MI reporting, supported board-level packs, and improved lending scorecard operations.', 5, 'cv', NOW()),
+    (6, 1, 4, 'Performance Analyst', 'Full-time', DATE '2014-08-01', 'month', DATE '2018-09-01', 'month', FALSE, 'Built KPI reporting, benchmarking, and performance scorecards for a network of subcontractors.', 6, 'cv', NOW());`,
   `INSERT INTO role_achievement VALUES
-    (1, 1, 'Introduced standardized query contracts used by product and analytics teams.', 'Reduced ad-hoc query defects by 40%', 1, 'cv', NOW()),
-    (2, 1, 'Built governed SQL execution surface with whitelisted query IDs.', 'Cut production incident risk for query endpoints', 2, 'manual', NOW()),
-    (3, 2, 'Migrated 60+ pipelines to a metadata-driven orchestration approach.', 'Saved ~25 engineering hours per sprint', 1, 'cv', NOW()),
-    (4, 2, 'Implemented observability for data freshness and SLA tracking.', 'Improved SLA attainment to 99.5%', 2, 'cv', NOW()),
-    (5, 3, 'Developed semantic models for executive reporting.', 'Enabled weekly KPI reviews', 1, 'linkedin', NOW());`,
+    (1, 1, 'Implemented modern data stacks on greenfield client engagements from discovery to serving.', 'Faster delivery across end-to-end stack', 1, 'cv', NOW()),
+    (2, 1, 'Built AI-powered summarisation pipelines using BigQuery''s native ML with LLM calls in dbt.', 'Improved automated narrative generation', 2, 'cv', NOW()),
+    (3, 1, 'Optimised dbt models across BigQuery, Snowflake, and Microsoft Fabric.', 'Portable patterns across warehouse platforms', 3, 'cv', NOW()),
+    (4, 1, 'Reviewed incremental model designs for large event datasets.', 'Reduced identity resolution complexity', 4, 'cv', NOW()),
+    (5, 1, 'Designed automated client data submission workflows with validation and error classification.', 'Lower manual operations overhead', 5, 'cv', NOW()),
+    (6, 2, 'Introduced pull-request and review templates for Looker and dbt Cloud workflows.', 'Improved governance and code quality', 1, 'cv', NOW()),
+    (7, 2, 'Built datasets for a new business review process.', 'Reduced analyst time-to-analysis', 2, 'cv', NOW()),
+    (8, 2, 'Managed ingestion prioritisation between data engineering and analytics teams.', 'Improved delivery coordination', 3, 'cv', NOW()),
+    (9, 2, 'Implemented slim CI checks for all dbt pull requests.', 'Reduced production defects', 4, 'cv', NOW()),
+    (10, 2, 'Introduced Datadog alerting for periods of heavy Snowflake load.', 'Improved warehouse reliability', 5, 'cv', NOW()),
+    (11, 2, 'Co-led functional Snowflake warehouse setup for different Looker user groups.', 'Reduced query queuing at stable cost', 6, 'cv', NOW()),
+    (12, 2, 'Built models from MusicBrainz data landed in S3 for data science use cases.', 'Expanded reusable external data assets', 7, 'cv', NOW()),
+    (13, 3, 'Implemented dbt to modernise and streamline analytics data workflows.', 'Improved analytics delivery speed', 1, 'cv', NOW()),
+    (14, 3, 'Mentored junior team members on A/B testing methods.', 'Raised statistical confidence in decisions', 2, 'cv', NOW()),
+    (15, 3, 'Supported non-technical teams to upskill their experimentation processes.', 'Improved trust in metrics', 3, 'cv', NOW()),
+    (16, 4, 'Implemented A/B testing within the product team as day-to-day practice.', 'Enabled evidence-based iteration', 1, 'cv', NOW()),
+    (17, 4, 'Partnered with engineering to define product data capture standards.', 'Improved instrumentation quality', 2, 'cv', NOW()),
+    (18, 4, 'Gathered stakeholder requirements and delivered Looker models and visualisations.', 'Improved reporting coverage', 3, 'cv', NOW()),
+    (19, 4, 'Co-administered Looker and maintained uptime and data quality targets.', 'Increased BI platform reliability', 4, 'cv', NOW()),
+    (20, 4, 'Moved product reporting away from spreadsheet-based legacy workflows.', 'Reduced manual reporting dependency', 5, 'cv', NOW()),
+    (21, 4, 'Developed Monthly Active User reporting and helped define it as the North Star metric.', 'Aligned product KPI strategy', 6, 'cv', NOW()),
+    (22, 4, 'Delivered ad-hoc insight work across product squads and wider business.', 'Improved decision turnaround', 7, 'cv', NOW()),
+    (23, 5, 'Produced daily SQL MI for internal and external stakeholders.', 'Reliable recurring reporting delivery', 1, 'cv', NOW()),
+    (24, 5, 'Contributed to company-wide data automation and rationalisation using SQL and VBA.', 'Increased automation coverage', 2, 'cv', NOW()),
+    (25, 5, 'Co-owned monthly board reporting packs including extraction and process improvements.', 'Improved board reporting operations', 3, 'cv', NOW()),
+    (26, 5, 'Identified issues in data warehouse feeds and coordinated supplier fixes.', 'Improved data quality continuity', 4, 'cv', NOW()),
+    (27, 6, 'Produced monthly KPI and forecast reporting across 30+ subcontractors.', 'Enhanced network performance visibility', 1, 'cv', NOW()),
+    (28, 6, 'Worked across teams to identify 20+ underperforming subcontractors.', 'Supported remediation and exits', 2, 'cv', NOW()),
+    (29, 6, 'Led specification and rollout of bespoke quarterly subcontractor KPI reporting.', 'Standardized stakeholder reporting', 3, 'cv', NOW()),
+    (30, 6, 'Introduced scorecard-based RAG monitoring for subcontractor performance.', 'Created repeatable governance tracking', 4, 'cv', NOW());`,
   `INSERT INTO skill_category VALUES
-    (1, 'Languages', 1, 'manual', NOW()),
-    (2, 'Data Platforms', 2, 'manual', NOW()),
-    (3, 'Visualization', 3, 'manual', NOW()),
-    (4, 'Engineering', 4, 'manual', NOW());`,
+    (1, 'Warehousing & SQL', 1, 'cv', NOW()),
+    (2, 'Ingestion', 2, 'cv', NOW()),
+    (3, 'Analytics Engineering', 3, 'cv', NOW()),
+    (4, 'Languages & Notebooks', 4, 'cv', NOW()),
+    (5, 'AI Tooling', 5, 'cv', NOW());`,
   `INSERT INTO skill VALUES
-    (1, 1, 'SQL', 1, 'manual', NOW()),
-    (2, 1, 'TypeScript', 2, 'manual', NOW()),
-    (3, 1, 'Python', 3, 'manual', NOW()),
-    (4, 2, 'DuckDB', 1, 'manual', NOW()),
-    (5, 2, 'dbt', 2, 'manual', NOW()),
-    (6, 2, 'Airflow', 3, 'manual', NOW()),
-    (7, 3, 'Tableau', 1, 'manual', NOW()),
-    (8, 3, 'Power BI', 2, 'manual', NOW()),
-    (9, 4, 'GitHub Actions', 1, 'manual', NOW()),
-    (10, 4, 'Testing Library', 2, 'manual', NOW());`,
+    (1, 1, 'SQL', 1, 'cv', NOW()),
+    (2, 1, 'Snowflake', 2, 'cv', NOW()),
+    (3, 1, 'BigQuery', 3, 'cv', NOW()),
+    (4, 1, 'Microsoft Fabric', 4, 'cv', NOW()),
+    (5, 2, 'Airbyte', 1, 'cv', NOW()),
+    (6, 2, 'Fivetran', 2, 'cv', NOW()),
+    (7, 3, 'dbt Core', 1, 'cv', NOW()),
+    (8, 3, 'dbt Cloud', 2, 'cv', NOW()),
+    (9, 3, 'Looker Modeling', 3, 'cv', NOW()),
+    (10, 3, 'Looker Visualisation', 4, 'cv', NOW()),
+    (11, 4, 'Python', 1, 'cv', NOW()),
+    (12, 4, 'Pandas', 2, 'cv', NOW()),
+    (13, 4, 'Jupyter Notebooks', 3, 'cv', NOW()),
+    (14, 4, 'Git', 4, 'cv', NOW()),
+    (15, 4, 'GitHub', 5, 'cv', NOW()),
+    (16, 4, 'R Studio', 6, 'cv', NOW()),
+    (17, 5, 'Claude Code', 1, 'cv', NOW()),
+    (18, 5, 'GitHub Cortex', 2, 'cv', NOW());`,
   `INSERT INTO person_skill VALUES
-    (1, 1, 1, 97, 10.0, TRUE, 'manual', NOW()),
-    (2, 1, 2, 83, 5.0, TRUE, 'manual', NOW()),
-    (3, 1, 3, 88, 8.0, TRUE, 'manual', NOW()),
-    (4, 1, 4, 85, 3.0, TRUE, 'manual', NOW()),
-    (5, 1, 5, 90, 6.0, TRUE, 'manual', NOW()),
-    (6, 1, 6, 80, 6.0, FALSE, 'manual', NOW()),
-    (7, 1, 7, 74, 4.0, FALSE, 'manual', NOW()),
-    (8, 1, 8, 69, 2.0, FALSE, 'manual', NOW()),
-    (9, 1, 9, 82, 4.0, TRUE, 'manual', NOW()),
-    (10, 1, 10, 78, 3.0, FALSE, 'manual', NOW());`,
+    (1, 1, 1, 97, 11.5, TRUE, 'cv', NOW()),
+    (2, 1, 2, 92, 4.0, TRUE, 'cv', NOW()),
+    (3, 1, 3, 90, 1.5, TRUE, 'cv', NOW()),
+    (4, 1, 4, 84, 1.0, FALSE, 'cv', NOW()),
+    (5, 1, 5, 82, 2.0, FALSE, 'cv', NOW()),
+    (6, 1, 6, 80, 3.0, FALSE, 'cv', NOW()),
+    (7, 1, 7, 94, 4.5, TRUE, 'cv', NOW()),
+    (8, 1, 8, 90, 4.0, TRUE, 'cv', NOW()),
+    (9, 1, 9, 91, 8.0, TRUE, 'cv', NOW()),
+    (10, 1, 10, 88, 8.0, FALSE, 'cv', NOW()),
+    (11, 1, 11, 90, 9.0, TRUE, 'cv', NOW()),
+    (12, 1, 12, 88, 9.0, FALSE, 'cv', NOW()),
+    (13, 1, 13, 86, 8.0, FALSE, 'cv', NOW()),
+    (14, 1, 14, 89, 10.0, FALSE, 'cv', NOW()),
+    (15, 1, 15, 91, 10.0, TRUE, 'cv', NOW()),
+    (16, 1, 16, 70, 6.0, FALSE, 'cv', NOW()),
+    (17, 1, 17, 83, 1.0, TRUE, 'cv', NOW()),
+    (18, 1, 18, 79, 1.0, FALSE, 'cv', NOW());`,
   `INSERT INTO education VALUES
-    (1, 1, 'University of Washington', 'B.S.', 'Computer Science', 2012, 2016, 1, 'cv', NOW());`,
-  `INSERT INTO certification VALUES
-    (1, 1, 'AWS Certified Data Analytics - Specialty', 'Amazon Web Services', 2023, NULL, 1, 'linkedin', NOW()),
-    (2, 1, 'dbt Fundamentals', 'dbt Labs', 2022, NULL, 2, 'cv', NOW());`,
+    (1, 1, 'Birkbeck, University of London', 'Graduate Certificate', 'Statistical Data Science', 2020, 2021, 1, 'cv', NOW()),
+    (2, 1, 'Birkbeck, University of London', 'Affiliate Student', 'Calculus 1 & Statistics 1', 2020, 2020, 2, 'cv', NOW()),
+    (3, 1, 'University College London', 'MSc', 'International Public Policy', 2012, 2013, 3, 'cv', NOW()),
+    (4, 1, 'University of Reading', 'BA', 'Politics & International Relations', 2008, 2011, 4, 'cv', NOW());`,
   `INSERT INTO project VALUES
-    (1, 1, 'SQL Portfolio Explorer', 'Interactive SQL-first portfolio with query contracts and printable CV.', 'https://github.com/andrewfindlay/sql-portfolio', NULL, 2025, NULL, 1, 'manual', NOW()),
-    (2, 1, 'Data Quality Ops Kit', 'Reusable alerting and validation framework for analytics pipelines.', 'https://github.com/andrewfindlay/dq-ops', NULL, 2024, 2025, 2, 'manual', NOW());`,
+    (1, 1, 'Modern Data Stack Delivery', 'Delivered end-to-end data platform implementations from ingestion to serving across greenfield client projects.', NULL, NULL, 2026, NULL, 1, 'cv', NOW()),
+    (2, 1, 'AI Summarisation Pipelines', 'Built production summarisation flows with BigQuery ML and dbt-managed orchestration patterns.', NULL, NULL, 2026, NULL, 2, 'cv', NOW()),
+    (3, 1, 'Client Data Submission Automation', 'Designed automated validation, error classification, and bulk transformation pipelines for client data delivery.', NULL, NULL, 2026, NULL, 3, 'cv', NOW()),
+    (4, 1, 'Warehouse Performance & Cost Optimisation', 'Implemented Snowflake workload segmentation and reliability controls for Looker user groups.', NULL, NULL, 2023, 2025, 4, 'cv', NOW());`,
   `INSERT INTO project_skill VALUES
-    (1, 1, 1, 'manual', NOW()),
-    (2, 1, 2, 'manual', NOW()),
-    (3, 1, 4, 'manual', NOW()),
-    (4, 1, 9, 'manual', NOW()),
-    (5, 2, 1, 'manual', NOW()),
-    (6, 2, 3, 'manual', NOW()),
-    (7, 2, 6, 'manual', NOW());`,
-  `INSERT INTO publication_or_talk VALUES
-    (1, 1, 'talk', 'Designing Stable SQL Contracts for Product Surfaces', 'Data Engineering Meetup', 2024, NULL, 1, 'manual', NOW());`,
-
-  `CREATE OR REPLACE VIEW v_profile_overview AS
+    (1, 1, 1, 'cv', NOW()),
+    (2, 1, 3, 'cv', NOW()),
+    (3, 1, 5, 'cv', NOW()),
+    (4, 1, 6, 'cv', NOW()),
+    (5, 1, 7, 'cv', NOW()),
+    (6, 1, 15, 'cv', NOW()),
+    (7, 2, 3, 'cv', NOW()),
+    (8, 2, 7, 'cv', NOW()),
+    (9, 2, 11, 'cv', NOW()),
+    (10, 2, 12, 'cv', NOW()),
+    (11, 2, 17, 'cv', NOW()),
+    (12, 2, 18, 'cv', NOW()),
+    (13, 3, 1, 'cv', NOW()),
+    (14, 3, 5, 'cv', NOW()),
+    (15, 3, 6, 'cv', NOW()),
+    (16, 3, 11, 'cv', NOW()),
+    (17, 3, 12, 'cv', NOW()),
+    (18, 4, 2, 'cv', NOW()),
+    (19, 4, 8, 'cv', NOW()),
+    (20, 4, 9, 'cv', NOW()),
+    (21, 4, 14, 'cv', NOW());`,
+  `CREATE OR REPLACE VIEW stg__profile_overview AS
     SELECT
       p.id AS person_id,
       p.full_name,
@@ -270,7 +330,7 @@ export const INIT_SQL: string[] = [
     FROM person p
     LEFT JOIN contact_method c ON c.person_id = p.id
     GROUP BY p.id, p.full_name, p.headline, p.location, p.summary, p.updated_at;`,
-  `CREATE OR REPLACE VIEW v_experience_timeline AS
+  `CREATE OR REPLACE VIEW stg__experience_roles AS
     SELECT
       r.person_id,
       r.id,
@@ -281,23 +341,16 @@ export const INIT_SQL: string[] = [
       r.end_date,
       r.is_current,
       r.summary,
-      r.display_order AS role_order,
-      list(a.achievement_text ORDER BY a.display_order) FILTER (WHERE a.id IS NOT NULL) AS achievements
+      r.display_order AS role_order
     FROM role r
-    JOIN employer e ON e.id = r.employer_id
-    LEFT JOIN role_achievement a ON a.role_id = r.id
-    GROUP BY
-      r.person_id,
-      r.id,
-      e.name,
-      r.title,
-      r.employment_type,
-      r.start_date,
-      r.end_date,
-      r.is_current,
-      r.summary,
-      r.display_order;`,
-  `CREATE OR REPLACE VIEW v_skills_matrix AS
+    JOIN employer e ON e.id = r.employer_id;`,
+  `CREATE OR REPLACE VIEW stg__role_achievements AS
+    SELECT
+      role_id,
+      achievement_text,
+      display_order
+    FROM role_achievement;`,
+  `CREATE OR REPLACE VIEW stg__skills_inventory AS
     SELECT
       ps.person_id,
       sc.name AS category,
@@ -310,17 +363,17 @@ export const INIT_SQL: string[] = [
     FROM person_skill ps
     JOIN skill s ON s.id = ps.skill_id
     JOIN skill_category sc ON sc.id = s.skill_category_id;`,
-  `CREATE OR REPLACE VIEW v_education_history AS
+  `CREATE OR REPLACE VIEW stg__education_history AS
     SELECT
-      e.person_id,
-      e.institution,
-      e.credential,
-      e.field_of_study,
-      e.start_year,
-      e.end_year,
-      e.display_order AS education_order
-    FROM education e;`,
-  `CREATE OR REPLACE VIEW v_projects_showcase AS
+      person_id,
+      institution,
+      credential,
+      field_of_study,
+      start_year,
+      end_year,
+      display_order AS education_order
+    FROM education;`,
+  `CREATE OR REPLACE VIEW stg__projects_inventory AS
     SELECT
       p.person_id,
       p.id,
@@ -331,10 +384,50 @@ export const INIT_SQL: string[] = [
       p.start_year,
       p.end_year,
       p.display_order AS project_order,
-      list(s.name ORDER BY s.display_order) FILTER (WHERE s.id IS NOT NULL) AS skills
+      ps.skill_id
     FROM project p
-    LEFT JOIN project_skill ps ON ps.project_id = p.id
-    LEFT JOIN skill s ON s.id = ps.skill_id
+    LEFT JOIN project_skill ps ON ps.project_id = p.id;`,
+
+  `CREATE OR REPLACE VIEW int__experience_rollup AS
+    SELECT
+      r.person_id,
+      r.id,
+      r.employer,
+      r.title,
+      r.employment_type,
+      r.start_date,
+      r.end_date,
+      r.is_current,
+      r.summary,
+      r.role_order,
+      list(a.achievement_text ORDER BY a.display_order) FILTER (WHERE a.achievement_text IS NOT NULL) AS achievements
+    FROM stg__experience_roles r
+    LEFT JOIN stg__role_achievements a ON a.role_id = r.id
+    GROUP BY
+      r.person_id,
+      r.id,
+      r.employer,
+      r.title,
+      r.employment_type,
+      r.start_date,
+      r.end_date,
+      r.is_current,
+      r.summary,
+      r.role_order;`,
+  `CREATE OR REPLACE VIEW int__projects_rollup AS
+    SELECT
+      p.person_id,
+      p.id,
+      p.name,
+      p.description,
+      p.repo_url,
+      p.demo_url,
+      p.start_year,
+      p.end_year,
+      p.project_order,
+      list(s.name ORDER BY s.display_order) FILTER (WHERE s.name IS NOT NULL) AS skills
+    FROM stg__projects_inventory p
+    LEFT JOIN skill s ON s.id = p.skill_id
     GROUP BY
       p.person_id,
       p.id,
@@ -344,10 +437,116 @@ export const INIT_SQL: string[] = [
       p.demo_url,
       p.start_year,
       p.end_year,
-      p.display_order;`,
-  `CREATE OR REPLACE VIEW v_master_cv AS
+      p.project_order;`,
+  `CREATE OR REPLACE VIEW int__skills_scored AS
     SELECT
-      p.id AS person_id,
+      person_id,
+      category,
+      skill,
+      proficiency,
+      years_experience,
+      highlighted,
+      category_order,
+      skill_order,
+      CASE
+        WHEN proficiency >= 90 THEN 'expert'
+        WHEN proficiency >= 75 THEN 'advanced'
+        WHEN proficiency >= 60 THEN 'intermediate'
+        ELSE 'working'
+      END AS skill_level
+    FROM stg__skills_inventory;`,
+
+  `CREATE OR REPLACE VIEW dmn__profile_overview AS
+    SELECT * FROM stg__profile_overview;`,
+  `CREATE OR REPLACE VIEW dmn__experience_timeline AS
+    SELECT
+      person_id,
+      id,
+      employer,
+      title,
+      employment_type,
+      start_date,
+      end_date,
+      is_current,
+      summary,
+      role_order,
+      achievements,
+      CASE
+        WHEN is_current THEN date_diff('month', start_date, current_date) + 1
+        ELSE date_diff('month', start_date, coalesce(end_date, current_date)) + 1
+      END AS tenure_months
+    FROM int__experience_rollup;`,
+  `CREATE OR REPLACE VIEW dmn__skills_matrix AS
+    SELECT * FROM int__skills_scored;`,
+  `CREATE OR REPLACE VIEW dmn__education_history AS
+    SELECT * FROM stg__education_history;`,
+  `CREATE OR REPLACE VIEW dmn__projects_showcase AS
+    SELECT * FROM int__projects_rollup;`,
+
+  `CREATE OR REPLACE VIEW prs__dashboard_profile AS
+    SELECT
+      person_id,
+      full_name,
+      headline,
+      location,
+      summary,
+      contact_methods,
+      social_profiles,
+      updated_at
+    FROM dmn__profile_overview;`,
+  `CREATE OR REPLACE VIEW prs__dashboard_experience AS
+    SELECT
+      person_id,
+      id,
+      employer,
+      title,
+      employment_type,
+      start_date,
+      end_date,
+      is_current,
+      summary,
+      achievements,
+      tenure_months,
+      role_order
+    FROM dmn__experience_timeline;`,
+  `CREATE OR REPLACE VIEW prs__dashboard_skills AS
+    SELECT
+      person_id,
+      category,
+      skill,
+      proficiency,
+      years_experience,
+      highlighted,
+      skill_level,
+      category_order,
+      skill_order
+    FROM dmn__skills_matrix;`,
+  `CREATE OR REPLACE VIEW prs__dashboard_education AS
+    SELECT
+      person_id,
+      institution,
+      credential,
+      field_of_study,
+      start_year,
+      end_year,
+      education_order
+    FROM dmn__education_history;`,
+  `CREATE OR REPLACE VIEW prs__dashboard_projects AS
+    SELECT
+      person_id,
+      id,
+      name,
+      description,
+      repo_url,
+      demo_url,
+      start_year,
+      end_year,
+      skills,
+      project_order
+    FROM dmn__projects_showcase;`,
+  `CREATE OR REPLACE VIEW prs__master_cv AS
+    SELECT
+      p.person_id,
       {
         'person': {
           'name': p.full_name,
@@ -355,51 +554,43 @@ export const INIT_SQL: string[] = [
           'location': p.location,
           'summary': p.summary
         },
-        'contact_methods': (
-          SELECT contact_methods
-          FROM v_profile_overview vpo
-          WHERE vpo.person_id = p.id
-        ),
-        'social_profiles': (
-          SELECT social_profiles
-          FROM v_profile_overview vpo
-          WHERE vpo.person_id = p.id
-        ),
+        'contact_methods': p.contact_methods,
+        'social_profiles': p.social_profiles,
         'experience': (
           SELECT list({
-            'employer': vet.employer,
-            'title': vet.title,
-            'employment_type': vet.employment_type,
-            'start_date': CAST(vet.start_date AS VARCHAR),
-            'end_date': CASE WHEN vet.is_current THEN 'Present' ELSE CAST(vet.end_date AS VARCHAR) END,
-            'is_current': vet.is_current,
-            'summary': vet.summary,
-            'achievements': vet.achievements
-          } ORDER BY vet.role_order)
-          FROM v_experience_timeline vet
-          WHERE vet.person_id = p.id
+            'employer': e.employer,
+            'title': e.title,
+            'employment_type': e.employment_type,
+            'start_date': CAST(e.start_date AS VARCHAR),
+            'end_date': CASE WHEN e.is_current THEN 'Present' ELSE CAST(e.end_date AS VARCHAR) END,
+            'is_current': e.is_current,
+            'summary': e.summary,
+            'achievements': e.achievements
+          } ORDER BY e.role_order)
+          FROM prs__dashboard_experience e
+          WHERE e.person_id = p.person_id
         ),
         'skills': (
           SELECT list({
-            'category': vsm.category,
-            'skill': vsm.skill,
-            'proficiency': vsm.proficiency,
-            'years_experience': vsm.years_experience,
-            'highlighted': vsm.highlighted
-          } ORDER BY vsm.category_order, vsm.skill_order)
-          FROM v_skills_matrix vsm
-          WHERE vsm.person_id = p.id
+            'category': s.category,
+            'skill': s.skill,
+            'proficiency': s.proficiency,
+            'years_experience': s.years_experience,
+            'highlighted': s.highlighted
+          } ORDER BY s.category_order, s.skill_order)
+          FROM prs__dashboard_skills s
+          WHERE s.person_id = p.person_id
         ),
         'education': (
           SELECT list({
-            'institution': veh.institution,
-            'credential': veh.credential,
-            'field_of_study': veh.field_of_study,
-            'start_year': veh.start_year,
-            'end_year': veh.end_year
-          } ORDER BY veh.education_order)
-          FROM v_education_history veh
-          WHERE veh.person_id = p.id
+            'institution': e.institution,
+            'credential': e.credential,
+            'field_of_study': e.field_of_study,
+            'start_year': e.start_year,
+            'end_year': e.end_year
+          } ORDER BY e.education_order)
+          FROM prs__dashboard_education e
+          WHERE e.person_id = p.person_id
         ),
         'certifications': (
           SELECT list({
@@ -409,20 +600,20 @@ export const INIT_SQL: string[] = [
             'credential_url': c.credential_url
           } ORDER BY c.display_order)
           FROM certification c
-          WHERE c.person_id = p.id
+          WHERE c.person_id = p.person_id
         ),
         'projects': (
           SELECT list({
-            'name': vps.name,
-            'description': vps.description,
-            'repo_url': vps.repo_url,
-            'demo_url': vps.demo_url,
-            'start_year': vps.start_year,
-            'end_year': vps.end_year,
-            'skills': vps.skills
-          } ORDER BY vps.project_order)
-          FROM v_projects_showcase vps
-          WHERE vps.person_id = p.id
+            'name': pr.name,
+            'description': pr.description,
+            'repo_url': pr.repo_url,
+            'demo_url': pr.demo_url,
+            'start_year': pr.start_year,
+            'end_year': pr.end_year,
+            'skills': pr.skills
+          } ORDER BY pr.project_order)
+          FROM prs__dashboard_projects pr
+          WHERE pr.person_id = p.person_id
         ),
         'talks': (
           SELECT list({
@@ -433,11 +624,74 @@ export const INIT_SQL: string[] = [
             'url': t.url
           } ORDER BY t.display_order)
           FROM publication_or_talk t
-          WHERE t.person_id = p.id
+          WHERE t.person_id = p.person_id
         ),
         'updated_at': CAST(p.updated_at AS VARCHAR)
       } AS cv
-    FROM person p;`
+    FROM prs__dashboard_profile p;`,
+  `CREATE OR REPLACE MACRO sp_joined_cv_snapshot(person_id_param) AS TABLE
+    WITH skill_inventory AS (
+      SELECT
+        s.person_id,
+        list({
+          'category': s.category,
+          'skill': s.skill,
+          'proficiency': s.proficiency,
+          'years_experience': s.years_experience,
+          'highlighted': s.highlighted
+        } ORDER BY s.category_order, s.skill_order) AS skills
+      FROM prs__dashboard_skills s
+      GROUP BY s.person_id
+    ),
+    project_inventory AS (
+      SELECT
+        p.person_id,
+        list({
+          'name': p.name,
+          'description': p.description,
+          'start_year': p.start_year,
+          'end_year': p.end_year,
+          'skills': p.skills
+        } ORDER BY p.project_order) AS projects
+      FROM prs__dashboard_projects p
+      GROUP BY p.person_id
+    ),
+    education_inventory AS (
+      SELECT
+        e.person_id,
+        list({
+          'institution': e.institution,
+          'credential': e.credential,
+          'field_of_study': e.field_of_study,
+          'start_year': e.start_year,
+          'end_year': e.end_year
+        } ORDER BY e.education_order) AS education
+      FROM prs__dashboard_education e
+      GROUP BY e.person_id
+    )
+    SELECT
+      p.person_id,
+      p.full_name,
+      p.headline,
+      p.location,
+      e.id AS role_id,
+      e.employer,
+      e.title AS role_title,
+      e.start_date,
+      e.end_date,
+      e.is_current,
+      e.summary AS role_summary,
+      e.achievements,
+      si.skills AS skill_inventory,
+      pi.projects AS project_inventory,
+      ei.education AS education_inventory
+    FROM prs__dashboard_profile p
+    LEFT JOIN prs__dashboard_experience e ON e.person_id = p.person_id
+    LEFT JOIN skill_inventory si ON si.person_id = p.person_id
+    LEFT JOIN project_inventory pi ON pi.person_id = p.person_id
+    LEFT JOIN education_inventory ei ON ei.person_id = p.person_id
+    WHERE p.person_id = person_id_param
+    ORDER BY e.role_order;`
 ];
 
 export const SCHEMA_TABLES: Array<{ name: string; description: string }> = [
@@ -457,10 +711,25 @@ export const SCHEMA_TABLES: Array<{ name: string; description: string }> = [
   { name: 'publication_or_talk', description: 'Optional talks and publications.' },
   { name: 'query_catalog', description: 'Registered saved-query metadata snapshot.' },
   { name: 'query_run_event', description: 'Execution telemetry for saved queries.' },
-  { name: 'v_profile_overview', description: 'Contract view for top-level profile data.' },
-  { name: 'v_experience_timeline', description: 'Contract view for role timeline.' },
-  { name: 'v_skills_matrix', description: 'Contract view for skills and proficiency.' },
-  { name: 'v_education_history', description: 'Contract view for education records.' },
-  { name: 'v_projects_showcase', description: 'Contract view for project highlights.' },
-  { name: 'v_master_cv', description: 'Stable JSON CV contract view.' }
+  { name: 'stg__profile_overview', description: 'Staging model for profile, contact, and social data.' },
+  { name: 'stg__experience_roles', description: 'Staging model for role records with employer enrichment.' },
+  { name: 'stg__role_achievements', description: 'Staging model for normalized achievement statements.' },
+  { name: 'stg__skills_inventory', description: 'Staging model for skill inventory with category metadata.' },
+  { name: 'stg__education_history', description: 'Staging model for education entries.' },
+  { name: 'stg__projects_inventory', description: 'Staging model for projects and linked skills.' },
+  { name: 'int__experience_rollup', description: 'Intermediate model rolling achievements into each role.' },
+  { name: 'int__projects_rollup', description: 'Intermediate model rolling skills into each project.' },
+  { name: 'int__skills_scored', description: 'Intermediate model adding semantic skill levels.' },
+  { name: 'dmn__profile_overview', description: 'Domain model for person-level profile overview.' },
+  { name: 'dmn__experience_timeline', description: 'Domain model for role timeline with tenure metrics.' },
+  { name: 'dmn__skills_matrix', description: 'Domain model for skills and capability depth.' },
+  { name: 'dmn__education_history', description: 'Domain model for education records.' },
+  { name: 'dmn__projects_showcase', description: 'Domain model for project highlights.' },
+  { name: 'prs__dashboard_profile', description: 'Presentation model for dashboard hero/profile state.' },
+  { name: 'prs__dashboard_experience', description: 'Presentation model for dashboard timeline widgets.' },
+  { name: 'prs__dashboard_skills', description: 'Presentation model for dashboard skill visualizations.' },
+  { name: 'prs__dashboard_education', description: 'Presentation model for dashboard education widgets.' },
+  { name: 'prs__dashboard_projects', description: 'Presentation model for dashboard project widgets.' },
+  { name: 'prs__master_cv', description: 'Presentation model for the stable JSON CV contract.' },
+  { name: 'sp_joined_cv_snapshot', description: 'Semantic-layer macro returning a joined CV dataset.' }
 ];

@@ -3,28 +3,26 @@
 This project implements the personal website redesign as a SQL-first experience powered by DuckDB.
 
 ## Implemented surfaces
-- Explorer: Saved query manifest with SQL files in `queries/`.
-- Workspace: Query viewer + runner with whitelist execution for saved queries.
-- Master CV: Rendered printable CV backed by `master_cv.sql` contract.
-- Insights: Experience timeline and skills matrix visualizations.
-- Schema: Relational model browser for the CV data model.
+- Dashboard: CV-meets-product dashboard powered by presentation-layer contracts.
+- Data Explorer: dbt-style browsing across warehouse objects and layered model files.
+- Export: Embedded and downloadable PDF CV experience.
 
 ## Data and query model
 - Relational schema + seed data live in `data/schema.ts`.
-- Contract views are materialized in DuckDB for UI stability:
-  - `v_profile_overview`
-  - `v_experience_timeline`
-  - `v_skills_matrix`
-  - `v_education_history`
-  - `v_projects_showcase`
-  - `v_master_cv`
+- Layered semantic models are materialized in DuckDB:
+  - Warehouse source tables: `person`, `role`, `skill`, etc.
+  - `stg__*`: normalized staging models
+  - `int__*`: intermediate rollups and scoring models
+  - `dmn__*`: domain-ready business entities
+  - `prs__dashboard_*`: dashboard presentation contracts
+  - `prs__master_cv`: stable JSON CV contract
 - Query repository:
-  - `queries/profile_overview.sql`
-  - `queries/experience_timeline.sql`
-  - `queries/skills_matrix.sql`
-  - `queries/education_history.sql`
-  - `queries/projects_showcase.sql`
-  - `queries/master_cv.sql`
+  - `queries/prs__dashboard_profile.sql`
+  - `queries/prs__dashboard_experience.sql`
+  - `queries/prs__dashboard_skills.sql`
+  - `queries/prs__dashboard_education.sql`
+  - `queries/prs__dashboard_projects.sql`
+  - `queries/prs__master_cv.sql`
   - `queries/manifest.json`
 - Manifest entries include contract metadata (`contractName`, `contractVersion`) and param schemas.
 - Query runner only permits IDs present in the manifest, validates params, and logs to:
@@ -55,4 +53,5 @@ Prerequisites: Node.js 20+
 
 ## Notes
 - This implementation keeps DuckDB as the SQL engine/backend.
-- Saved queries are read-only contracts. Scratchpad remains editable for local ad-hoc SQL.
+- Dashboard widgets consume presentation contracts (`prs__dashboard_*`) only.
+- Saved query contracts are read-only; Explorer supports editable read-only SQL execution for ad-hoc inspection.

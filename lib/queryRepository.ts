@@ -1,10 +1,10 @@
 import manifest from '../queries/manifest.json';
-import educationHistorySql from '../queries/education_history.sql?raw';
-import experienceTimelineSql from '../queries/experience_timeline.sql?raw';
-import masterCvSql from '../queries/master_cv.sql?raw';
-import profileOverviewSql from '../queries/profile_overview.sql?raw';
-import projectsShowcaseSql from '../queries/projects_showcase.sql?raw';
-import skillsMatrixSql from '../queries/skills_matrix.sql?raw';
+import educationHistorySql from '../queries/prs__dashboard_education.sql?raw';
+import experienceTimelineSql from '../queries/prs__dashboard_experience.sql?raw';
+import masterCvSql from '../queries/prs__master_cv.sql?raw';
+import profileOverviewSql from '../queries/prs__dashboard_profile.sql?raw';
+import projectsShowcaseSql from '../queries/prs__dashboard_projects.sql?raw';
+import skillsMatrixSql from '../queries/prs__dashboard_skills.sql?raw';
 import type { QueryCatalogEntry, QueryId, SavedQuery } from '../types';
 
 interface ManifestShape {

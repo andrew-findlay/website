@@ -5,6 +5,9 @@ on:
   push:
     branches:
       - main
+      - dev
+      - initial-commit
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
