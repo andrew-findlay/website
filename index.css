@@ -1,17 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-app-bg: #05070f;
-  --color-panel-bg: #11192b;
-  --color-panel-highlight: #18253d;
-  --color-border-subtle: #314364;
-  --color-text-main: #ebf0fb;
-  --color-text-dim: #9caecd;
-  --color-primary: #3b82f6;
+  --font-sans: "Space Grotesk", "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", monospace;
+  --color-app-bg: #05070a;
+  --color-panel-bg: #0f1319;
+  --color-panel-highlight: #1a2029;
+  --color-border-subtle: #2c333e;
+  --color-text-main: #f2f4f8;
+  --color-text-dim: #8a94a7;
+  --color-primary: #3c83f6;
 }
 
 :root {
   color-scheme: dark;
+  --color-app-bg: #05070a;
+  --color-panel-bg: #0f1319;
+  --color-panel-highlight: #1a2029;
+  --color-border-subtle: #2c333e;
+  --color-text-main: #f2f4f8;
+  --color-text-dim: #8a94a7;
+  --color-primary: #3c83f6;
+  --page-bg: radial-gradient(circle at 20% -15%, #1d2f53 0%, #0b101a 42%, #05070a 100%);
+  --scroll-track: rgb(17 23 34 / 95%);
+  --scroll-thumb: #2f3a4a;
+  --scroll-thumb-hover: #4a5a73;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --color-app-bg: #f3f7ff;
+  --color-panel-bg: #ffffff;
+  --color-panel-highlight: #e9eef8;
+  --color-border-subtle: #c8d4e6;
+  --color-text-main: #122033;
+  --color-text-dim: #4f617c;
+  --color-primary: #2563eb;
+  --page-bg: radial-gradient(circle at 25% -20%, #dbe9ff 0%, #edf3ff 44%, #f6f9ff 100%);
+  --scroll-track: #e6ecf5;
+  --scroll-thumb: #b7c5da;
+  --scroll-thumb-hover: #8da4c3;
 }
 
 * {
@@ -27,7 +56,8 @@ body,
 
 body {
   margin: 0;
-  background: radial-gradient(circle at 10% -10%, #18294a 0%, #0b1020 45%, #05070f 100%);
+  font-family: var(--font-sans);
+  background: var(--page-bg);
   color: var(--color-text-main);
 }
 
@@ -37,17 +67,17 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgb(18 26 49 / 80%);
+  background: var(--scroll-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2e3a5b;
+  background: var(--scroll-thumb);
   border-radius: 999px;
-  border: 2px solid rgb(18 26 49 / 90%);
+  border: 2px solid var(--scroll-track);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #445888;
+  background: var(--scroll-thumb-hover);
 }
 
 @media print {
@@ -60,22 +90,14 @@ body {
   }
 
   header,
-  aside,
-  nav {
+  nav,
+  aside {
     display: none !important;
   }
 
   main {
-    overflow: visible !important;
+    max-width: none !important;
     padding: 0 !important;
     margin: 0 !important;
-  }
-
-  .cv-document {
-    border: none !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
   }
 }

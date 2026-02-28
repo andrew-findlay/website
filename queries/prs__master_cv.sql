@@ -1,4 +1,4 @@
 SELECT
   cv
-FROM v_master_cv
+FROM prs__master_cv
 WHERE person_id = {{person_id}};

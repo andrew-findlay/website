@@ -21,12 +21,12 @@ vi.mock('../../lib/queryRepository', () => ({
     if (queryId === 'skills_matrix') {
       return {
         id: 'skills_matrix',
-        file: 'skills_matrix.sql',
+        file: 'prs__dashboard_skills.sql',
         title: 'Skills Matrix',
         description: 'Skills',
         surface: 'Insights',
         readOnly: true,
-        contractName: 'v_skills_matrix',
+        contractName: 'prs__dashboard_skills',
         contractVersion: '1.0.0',
         resultShape: 'table',
         tags: ['insights'],
@@ -40,12 +40,12 @@ vi.mock('../../lib/queryRepository', () => ({
     if (queryId === 'master_cv') {
       return {
         id: 'master_cv',
-        file: 'master_cv.sql',
+        file: 'prs__master_cv.sql',
         title: 'Master CV',
         description: 'Master',
         surface: 'CV',
         readOnly: true,
-        contractName: 'v_master_cv',
+        contractName: 'prs__master_cv',
         contractVersion: '1.0.0',
         resultShape: 'json_contract',
         tags: ['cv'],
@@ -59,22 +59,22 @@ vi.mock('../../lib/queryRepository', () => ({
   }),
   getSavedQuerySql: vi.fn((queryId: string) => {
     if (queryId === 'skills_matrix') {
-      return 'SELECT * FROM v_skills_matrix WHERE person_id = {{person_id}} AND proficiency >= {{min_proficiency}};';
+      return 'SELECT * FROM prs__dashboard_skills WHERE person_id = {{person_id}} AND proficiency >= {{min_proficiency}};';
     }
     if (queryId === 'master_cv') {
-      return 'SELECT cv FROM v_master_cv WHERE person_id = {{person_id}};';
+      return 'SELECT cv FROM prs__master_cv WHERE person_id = {{person_id}};';
     }
     throw new Error('Unknown query');
   }),
   getQueryCatalogEntries: vi.fn(() => [
     {
       id: 'skills_matrix',
-      file: 'skills_matrix.sql',
+      file: 'prs__dashboard_skills.sql',
       title: 'Skills Matrix',
       description: 'Skills',
       surface: 'Insights',
       readOnly: true,
-      contractName: 'v_skills_matrix',
+      contractName: 'prs__dashboard_skills',
       contractVersion: '1.0.0',
       resultShape: 'table',
       tags: ['insights'],
@@ -83,23 +83,23 @@ vi.mock('../../lib/queryRepository', () => ({
         min_proficiency: { type: 'number', default: 0, minimum: 0, maximum: 100 }
       },
       sqlText:
-        'SELECT * FROM v_skills_matrix WHERE person_id = {{person_id}} AND proficiency >= {{min_proficiency}};'
+        'SELECT * FROM prs__dashboard_skills WHERE person_id = {{person_id}} AND proficiency >= {{min_proficiency}};'
     },
     {
       id: 'master_cv',
-      file: 'master_cv.sql',
+      file: 'prs__master_cv.sql',
       title: 'Master CV',
       description: 'Master',
       surface: 'CV',
       readOnly: true,
-      contractName: 'v_master_cv',
+      contractName: 'prs__master_cv',
       contractVersion: '1.0.0',
       resultShape: 'json_contract',
       tags: ['cv'],
       paramsSchema: {
         person_id: { type: 'number', default: 1, minimum: 1, maximum: 999999 }
       },
-      sqlText: 'SELECT cv FROM v_master_cv WHERE person_id = {{person_id}};'
+      sqlText: 'SELECT cv FROM prs__master_cv WHERE person_id = {{person_id}};'
     }
   ])
 }));

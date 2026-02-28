@@ -7,5 +7,5 @@ SELECT
   contact_methods,
   social_profiles,
   updated_at
-FROM v_profile_overview
+FROM stg__profile_overview
 WHERE person_id = {{person_id}};
