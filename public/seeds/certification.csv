@@ -1,0 +1,2 @@
+id,person_id,certification_name,issuer,issue_year,credential_url,display_order
+1,1,Analytics Engineering Certification,dbt Labs,2023,https://credentials.getdbt.com/,1

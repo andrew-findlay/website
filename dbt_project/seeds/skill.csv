@@ -1,0 +1,13 @@
+id,skill_category_id,name,display_order
+1,1,SQL,1
+2,1,Python,2
+3,2,Snowflake,1
+4,2,BigQuery,2
+5,2,MySQL,3
+6,3,dbt Core,1
+7,3,dbt Cloud,2
+8,3,Looker,3
+9,4,Fivetran,1
+10,4,Airbyte,2
+11,5,Terraform,1
+12,6,Claude Code,1

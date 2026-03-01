@@ -1,0 +1,11 @@
+
+    
+    
+    truncate table "careeros"."main_raw"."contact_method";
+    -- dbt seed --
+    
+          COPY "careeros"."main_raw"."contact_method" FROM '/Users/andrew.findlay/Documents/Github/personal/website/dbt_project/seeds/contact_method.csv' (FORMAT CSV, HEADER TRUE, DELIMITER ',')
+        
+
+;
+  

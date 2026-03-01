@@ -1,0 +1,11 @@
+
+    
+    
+    truncate table "careeros"."main_raw"."person_skill";
+    -- dbt seed --
+    
+          COPY "careeros"."main_raw"."person_skill" FROM '/Users/andrew.findlay/Documents/Github/personal/website/dbt_project/seeds/person_skill.csv' (FORMAT CSV, HEADER TRUE, DELIMITER ',')
+        
+
+;
+  

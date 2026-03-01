@@ -1,0 +1,5 @@
+id,person_id,institution,credential,field_of_study,start_year,end_year,display_order
+1,1,Birkbeck University of London,Graduate Certificate,Statistical Data Science,2020,2021,1
+2,1,Birkbeck University of London,Affiliate Student,Calculus 1 & Statistics 1,2020,2020,2
+3,1,University College London,MSc,International Public Policy,2012,2013,3
+4,1,University of Reading,BA,Politics & International Relations,2008,2011,4

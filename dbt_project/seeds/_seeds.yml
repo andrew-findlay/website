@@ -1,0 +1,119 @@
+version: 2
+
+seeds:
+  - name: person
+    description: Root profile entity.
+    config:
+      column_types:
+        id: integer
+
+  - name: contact_method
+    description: Email, phone, and website contact channels.
+    config:
+      column_types:
+        id: integer
+        person_id: integer
+        display_order: integer
+
+  - name: social_profile
+    description: Social handles and profile links.
+    config:
+      column_types:
+        id: integer
+        person_id: integer
+        display_order: integer
+
+  - name: employer
+    description: Normalised employer dimension.
+    config:
+      column_types:
+        id: integer
+
+  - name: role
+    description: Employment timeline — one row per job.
+    config:
+      column_types:
+        id: integer
+        person_id: integer
+        employer_id: integer
+        start_date: date
+        end_date: date
+        is_current: boolean
+        display_order: integer
+
+  - name: role_achievement
+    description: Bullet-point achievements per role.
+    config:
+      column_types:
+        id: integer
+        role_id: integer
+        display_order: integer
+
+  - name: skill_category
+    description: Skill groupings.
+    config:
+      column_types:
+        id: integer
+        display_order: integer
+
+  - name: skill
+    description: Individual skills within categories.
+    config:
+      column_types:
+        id: integer
+        skill_category_id: integer
+        display_order: integer
+
+  - name: person_skill
+    description: Skills associated with the person and years of experience.
+    config:
+      column_types:
+        id: integer
+        person_id: integer
+        skill_id: integer
+        years_experience: decimal
+
+  - name: role_skill
+    description: Skills used in each role.
+    config:
+      column_types:
+        id: integer
+        role_id: integer
+        skill_id: integer
+
+  - name: education
+    description: Degrees and academic credentials.
+    config:
+      column_types:
+        id: integer
+        person_id: integer
+        start_year: integer
+        end_year: integer
+        display_order: integer
+
+  - name: certification
+    description: Professional certifications.
+    config:
+      column_types:
+        id: integer
+        person_id: integer
+        issue_year: integer
+        display_order: integer
+
+  - name: project
+    description: Portfolio and side projects.
+    config:
+      column_types:
+        id: integer
+        person_id: integer
+        start_year: integer
+        end_year: integer
+        display_order: integer
+
+  - name: project_skill
+    description: Skills used per project.
+    config:
+      column_types:
+        id: integer
+        project_id: integer
+        skill_id: integer

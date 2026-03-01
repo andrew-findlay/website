@@ -1,318 +1,256 @@
+// data/schema.ts
+// Coherent analytics data model: source → stg → int → mart
+// Key additions vs previous version:
+//   - role_skill: skills used per role (closes the "what did I use where?" gap)
+//   - talk_or_article: renamed from publication_or_talk, FK to role added
+//   - layers renamed to stg / int / mart (standard dbt convention)
+//   - query_catalog + query_run_event removed from domain tables
+//   - start_date_precision / end_date_precision removed (use first-of-month convention)
+//   - impact_metric removed from role_achievement (dead column)
+
 export const INIT_SQL: string[] = [
+  // ─────────────────────────────────────────
+  // SOURCE LAYER — normalised facts, no logic
+  // ─────────────────────────────────────────
   `CREATE TABLE person (
-    id INTEGER PRIMARY KEY,
-    full_name VARCHAR NOT NULL,
-    headline VARCHAR NOT NULL,
-    summary VARCHAR NOT NULL,
-    location VARCHAR NOT NULL,
-    source VARCHAR NOT NULL,
-    updated_at TIMESTAMP NOT NULL
-  );`,
-  `CREATE TABLE contact_method (
-    id INTEGER PRIMARY KEY,
-    person_id INTEGER NOT NULL,
-    kind VARCHAR NOT NULL,
-    value VARCHAR NOT NULL,
-    label VARCHAR,
-    display_order INTEGER NOT NULL,
-    source VARCHAR NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
-    FOREIGN KEY (person_id) REFERENCES person(id)
-  );`,
-  `CREATE TABLE social_profile (
-    id INTEGER PRIMARY KEY,
-    person_id INTEGER NOT NULL,
-    platform VARCHAR NOT NULL,
-    url VARCHAR NOT NULL,
-    handle VARCHAR,
-    display_order INTEGER NOT NULL,
-    source VARCHAR NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
-    FOREIGN KEY (person_id) REFERENCES person(id)
-  );`,
-  `CREATE TABLE employer (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR NOT NULL,
-    website VARCHAR,
-    location VARCHAR,
-    source VARCHAR NOT NULL,
-    updated_at TIMESTAMP NOT NULL
-  );`,
-  `CREATE TABLE role (
-    id INTEGER PRIMARY KEY,
-    person_id INTEGER NOT NULL,
-    employer_id INTEGER NOT NULL,
-    title VARCHAR NOT NULL,
-    employment_type VARCHAR NOT NULL,
-    start_date DATE NOT NULL,
-    start_date_precision VARCHAR NOT NULL,
-    end_date DATE,
-    end_date_precision VARCHAR,
-    is_current BOOLEAN NOT NULL,
-    summary VARCHAR NOT NULL,
-    display_order INTEGER NOT NULL,
-    source VARCHAR NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
-    FOREIGN KEY (person_id) REFERENCES person(id),
-    FOREIGN KEY (employer_id) REFERENCES employer(id)
-  );`,
-  `CREATE TABLE role_achievement (
-    id INTEGER PRIMARY KEY,
-    role_id INTEGER NOT NULL,
-    achievement_text VARCHAR NOT NULL,
-    impact_metric VARCHAR,
-    display_order INTEGER NOT NULL,
-    source VARCHAR NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
-    FOREIGN KEY (role_id) REFERENCES role(id)
-  );`,
-  `CREATE TABLE skill_category (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR NOT NULL,
-    display_order INTEGER NOT NULL,
-    source VARCHAR NOT NULL,
-    updated_at TIMESTAMP NOT NULL
-  );`,
-  `CREATE TABLE skill (
-    id INTEGER PRIMARY KEY,
-    skill_category_id INTEGER NOT NULL,
-    name VARCHAR NOT NULL,
-    display_order INTEGER NOT NULL,
-    source VARCHAR NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
-    FOREIGN KEY (skill_category_id) REFERENCES skill_category(id)
-  );`,
-  `CREATE TABLE person_skill (
-    id INTEGER PRIMARY KEY,
-    person_id INTEGER NOT NULL,
-    skill_id INTEGER NOT NULL,
-    proficiency INTEGER NOT NULL,
-    years_experience DECIMAL(4,1),
-    highlighted BOOLEAN NOT NULL,
-    source VARCHAR NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
-    FOREIGN KEY (person_id) REFERENCES person(id),
-    FOREIGN KEY (skill_id) REFERENCES skill(id)
-  );`,
-  `CREATE TABLE education (
-    id INTEGER PRIMARY KEY,
-    person_id INTEGER NOT NULL,
-    institution VARCHAR NOT NULL,
-    credential VARCHAR NOT NULL,
-    field_of_study VARCHAR,
-    start_year INTEGER,
-    end_year INTEGER,
-    display_order INTEGER NOT NULL,
-    source VARCHAR NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
-    FOREIGN KEY (person_id) REFERENCES person(id)
-  );`,
-  `CREATE TABLE certification (
-    id INTEGER PRIMARY KEY,
-    person_id INTEGER NOT NULL,
-    certification_name VARCHAR NOT NULL,
-    issuer VARCHAR NOT NULL,
-    issue_year INTEGER,
-    credential_url VARCHAR,
-    display_order INTEGER NOT NULL,
-    source VARCHAR NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
-    FOREIGN KEY (person_id) REFERENCES person(id)
-  );`,
-  `CREATE TABLE project (
-    id INTEGER PRIMARY KEY,
-    person_id INTEGER NOT NULL,
-    name VARCHAR NOT NULL,
-    description VARCHAR NOT NULL,
-    repo_url VARCHAR,
-    demo_url VARCHAR,
-    start_year INTEGER,
-    end_year INTEGER,
-    display_order INTEGER NOT NULL,
-    source VARCHAR NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
-    FOREIGN KEY (person_id) REFERENCES person(id)
-  );`,
-  `CREATE TABLE project_skill (
-    id INTEGER PRIMARY KEY,
-    project_id INTEGER NOT NULL,
-    skill_id INTEGER NOT NULL,
-    source VARCHAR NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
-    FOREIGN KEY (project_id) REFERENCES project(id),
-    FOREIGN KEY (skill_id) REFERENCES skill(id)
-  );`,
-  `CREATE TABLE publication_or_talk (
-    id INTEGER PRIMARY KEY,
-    person_id INTEGER NOT NULL,
-    kind VARCHAR NOT NULL,
-    title VARCHAR NOT NULL,
-    venue VARCHAR,
-    publication_year INTEGER,
-    url VARCHAR,
-    display_order INTEGER NOT NULL,
-    source VARCHAR NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
-    FOREIGN KEY (person_id) REFERENCES person(id)
-  );`,
-  `CREATE TABLE query_catalog (
-    query_id VARCHAR PRIMARY KEY,
-    title VARCHAR NOT NULL,
-    surface VARCHAR NOT NULL,
-    contract_name VARCHAR NOT NULL,
-    contract_version VARCHAR NOT NULL,
-    read_only BOOLEAN NOT NULL,
-    params_schema_json VARCHAR NOT NULL,
-    sql_text VARCHAR NOT NULL,
-    updated_at TIMESTAMP NOT NULL
-  );`,
-  `CREATE TABLE query_run_event (
-    run_id VARCHAR PRIMARY KEY,
-    query_id VARCHAR NOT NULL,
-    executed_at TIMESTAMP NOT NULL,
-    success BOOLEAN NOT NULL,
-    duration_ms DOUBLE NOT NULL,
-    row_count INTEGER NOT NULL,
-    params_json VARCHAR NOT NULL,
-    error_message VARCHAR
+    id             INTEGER PRIMARY KEY,
+    full_name      VARCHAR NOT NULL,
+    headline       VARCHAR NOT NULL,
+    summary        VARCHAR NOT NULL,
+    location       VARCHAR NOT NULL,
+    source         VARCHAR NOT NULL DEFAULT 'cv',
+    updated_at     TIMESTAMP NOT NULL
   );`,
 
-  `INSERT INTO person VALUES (
-    1,
-    'Andrew Findlay',
-    'Analytics Engineer',
-    'Analytics Engineer focused on developing data-led solutions that improve outcomes for customers and business stakeholders. Experienced in cross-functional delivery and translating complex technical concepts for non-technical audiences.',
-    'London, United Kingdom',
-    'cv',
-    NOW()
+  `CREATE TABLE contact_method (
+    id             INTEGER PRIMARY KEY,
+    person_id      INTEGER NOT NULL,
+    kind           VARCHAR NOT NULL,   -- 'email' | 'phone' | 'website'
+    value          VARCHAR NOT NULL,
+    label          VARCHAR,
+    display_order  INTEGER NOT NULL,
+    FOREIGN KEY (person_id) REFERENCES person(id)
   );`,
-  `INSERT INTO contact_method VALUES
-    (1, 1, 'email', 'hello@andrewfindlay.io', 'Email', 1, 'cv', NOW()),
-    (2, 1, 'website', 'https://www.andrewfindlay.io', 'Website', 2, 'cv', NOW()),
-    (3, 1, 'phone', '07792 300766', 'Mobile', 3, 'cv', NOW());`,
-  `INSERT INTO social_profile VALUES
-    (1, 1, 'GitHub', 'https://github.com/andrewfindlay', 'andrewfindlay', 1, 'manual', NOW()),
-    (2, 1, 'LinkedIn', 'https://linkedin.com/in/andrew-findlay', 'andrew-findlay', 2, 'manual', NOW());`,
-  `INSERT INTO employer VALUES
-    (1, 'Tasman Analytics', NULL, 'London, UK', 'cv', NOW()),
-    (2, 'The Orchard', NULL, 'London, UK', 'cv', NOW()),
-    (3, 'TotallyMoney', NULL, 'London, UK', 'cv', NOW()),
-    (4, 'Start Up Loans', NULL, 'London, UK', 'cv', NOW());`,
-  `INSERT INTO role VALUES
-    (1, 1, 1, 'Analytics Engineer', 'Contract', DATE '2025-07-01', 'month', NULL, NULL, TRUE, 'Implemented modern data stacks on greenfield engagements, covering ingestion, transformation, and serving layers.', 1, 'cv', NOW()),
-    (2, 1, 2, 'Analytics Engineer', 'Full-time', DATE '2023-03-01', 'month', DATE '2025-06-01', 'month', FALSE, 'Led analytics engineering delivery across dbt, Looker, and Snowflake with a focus on reliability, performance, and stakeholder enablement.', 2, 'cv', NOW()),
-    (3, 1, 3, 'Senior Data Analyst', 'Full-time', DATE '2021-09-01', 'month', DATE '2022-09-01', 'month', FALSE, 'Modernised analytics workflows with dbt while mentoring experimentation practice across the analytics team.', 3, 'cv', NOW()),
-    (4, 1, 3, 'Product Data Analyst', 'Full-time', DATE '2018-10-01', 'month', DATE '2021-09-01', 'month', FALSE, 'Embedded experimentation and product analytics in cross-functional squads and replaced legacy spreadsheet reporting.', 4, 'cv', NOW()),
-    (5, 1, 4, 'Risk & Data Analyst', 'Full-time', DATE '2017-09-01', 'month', DATE '2018-09-01', 'month', FALSE, 'Produced automated MI reporting, supported board-level packs, and improved lending scorecard operations.', 5, 'cv', NOW()),
-    (6, 1, 4, 'Performance Analyst', 'Full-time', DATE '2014-08-01', 'month', DATE '2018-09-01', 'month', FALSE, 'Built KPI reporting, benchmarking, and performance scorecards for a network of subcontractors.', 6, 'cv', NOW());`,
-  `INSERT INTO role_achievement VALUES
-    (1, 1, 'Implemented modern data stacks on greenfield client engagements from discovery to serving.', 'Faster delivery across end-to-end stack', 1, 'cv', NOW()),
-    (2, 1, 'Built AI-powered summarisation pipelines using BigQuery''s native ML with LLM calls in dbt.', 'Improved automated narrative generation', 2, 'cv', NOW()),
-    (3, 1, 'Optimised dbt models across BigQuery, Snowflake, and Microsoft Fabric.', 'Portable patterns across warehouse platforms', 3, 'cv', NOW()),
-    (4, 1, 'Reviewed incremental model designs for large event datasets.', 'Reduced identity resolution complexity', 4, 'cv', NOW()),
-    (5, 1, 'Designed automated client data submission workflows with validation and error classification.', 'Lower manual operations overhead', 5, 'cv', NOW()),
-    (6, 2, 'Introduced pull-request and review templates for Looker and dbt Cloud workflows.', 'Improved governance and code quality', 1, 'cv', NOW()),
-    (7, 2, 'Built datasets for a new business review process.', 'Reduced analyst time-to-analysis', 2, 'cv', NOW()),
-    (8, 2, 'Managed ingestion prioritisation between data engineering and analytics teams.', 'Improved delivery coordination', 3, 'cv', NOW()),
-    (9, 2, 'Implemented slim CI checks for all dbt pull requests.', 'Reduced production defects', 4, 'cv', NOW()),
-    (10, 2, 'Introduced Datadog alerting for periods of heavy Snowflake load.', 'Improved warehouse reliability', 5, 'cv', NOW()),
-    (11, 2, 'Co-led functional Snowflake warehouse setup for different Looker user groups.', 'Reduced query queuing at stable cost', 6, 'cv', NOW()),
-    (12, 2, 'Built models from MusicBrainz data landed in S3 for data science use cases.', 'Expanded reusable external data assets', 7, 'cv', NOW()),
-    (13, 3, 'Implemented dbt to modernise and streamline analytics data workflows.', 'Improved analytics delivery speed', 1, 'cv', NOW()),
-    (14, 3, 'Mentored junior team members on A/B testing methods.', 'Raised statistical confidence in decisions', 2, 'cv', NOW()),
-    (15, 3, 'Supported non-technical teams to upskill their experimentation processes.', 'Improved trust in metrics', 3, 'cv', NOW()),
-    (16, 4, 'Implemented A/B testing within the product team as day-to-day practice.', 'Enabled evidence-based iteration', 1, 'cv', NOW()),
-    (17, 4, 'Partnered with engineering to define product data capture standards.', 'Improved instrumentation quality', 2, 'cv', NOW()),
-    (18, 4, 'Gathered stakeholder requirements and delivered Looker models and visualisations.', 'Improved reporting coverage', 3, 'cv', NOW()),
-    (19, 4, 'Co-administered Looker and maintained uptime and data quality targets.', 'Increased BI platform reliability', 4, 'cv', NOW()),
-    (20, 4, 'Moved product reporting away from spreadsheet-based legacy workflows.', 'Reduced manual reporting dependency', 5, 'cv', NOW()),
-    (21, 4, 'Developed Monthly Active User reporting and helped define it as the North Star metric.', 'Aligned product KPI strategy', 6, 'cv', NOW()),
-    (22, 4, 'Delivered ad-hoc insight work across product squads and wider business.', 'Improved decision turnaround', 7, 'cv', NOW()),
-    (23, 5, 'Produced daily SQL MI for internal and external stakeholders.', 'Reliable recurring reporting delivery', 1, 'cv', NOW()),
-    (24, 5, 'Contributed to company-wide data automation and rationalisation using SQL and VBA.', 'Increased automation coverage', 2, 'cv', NOW()),
-    (25, 5, 'Co-owned monthly board reporting packs including extraction and process improvements.', 'Improved board reporting operations', 3, 'cv', NOW()),
-    (26, 5, 'Identified issues in data warehouse feeds and coordinated supplier fixes.', 'Improved data quality continuity', 4, 'cv', NOW()),
-    (27, 6, 'Produced monthly KPI and forecast reporting across 30+ subcontractors.', 'Enhanced network performance visibility', 1, 'cv', NOW()),
-    (28, 6, 'Worked across teams to identify 20+ underperforming subcontractors.', 'Supported remediation and exits', 2, 'cv', NOW()),
-    (29, 6, 'Led specification and rollout of bespoke quarterly subcontractor KPI reporting.', 'Standardized stakeholder reporting', 3, 'cv', NOW()),
-    (30, 6, 'Introduced scorecard-based RAG monitoring for subcontractor performance.', 'Created repeatable governance tracking', 4, 'cv', NOW());`,
-  `INSERT INTO skill_category VALUES
-    (1, 'Warehousing & SQL', 1, 'cv', NOW()),
-    (2, 'Ingestion', 2, 'cv', NOW()),
-    (3, 'Analytics Engineering', 3, 'cv', NOW()),
-    (4, 'Languages & Notebooks', 4, 'cv', NOW()),
-    (5, 'AI Tooling', 5, 'cv', NOW());`,
-  `INSERT INTO skill VALUES
-    (1, 1, 'SQL', 1, 'cv', NOW()),
-    (2, 1, 'Snowflake', 2, 'cv', NOW()),
-    (3, 1, 'BigQuery', 3, 'cv', NOW()),
-    (4, 1, 'Microsoft Fabric', 4, 'cv', NOW()),
-    (5, 2, 'Airbyte', 1, 'cv', NOW()),
-    (6, 2, 'Fivetran', 2, 'cv', NOW()),
-    (7, 3, 'dbt Core', 1, 'cv', NOW()),
-    (8, 3, 'dbt Cloud', 2, 'cv', NOW()),
-    (9, 3, 'Looker Modeling', 3, 'cv', NOW()),
-    (10, 3, 'Looker Visualisation', 4, 'cv', NOW()),
-    (11, 4, 'Python', 1, 'cv', NOW()),
-    (12, 4, 'Pandas', 2, 'cv', NOW()),
-    (13, 4, 'Jupyter Notebooks', 3, 'cv', NOW()),
-    (14, 4, 'Git', 4, 'cv', NOW()),
-    (15, 4, 'GitHub', 5, 'cv', NOW()),
-    (16, 4, 'R Studio', 6, 'cv', NOW()),
-    (17, 5, 'Claude Code', 1, 'cv', NOW()),
-    (18, 5, 'GitHub Cortex', 2, 'cv', NOW());`,
-  `INSERT INTO person_skill VALUES
-    (1, 1, 1, 97, 11.5, TRUE, 'cv', NOW()),
-    (2, 1, 2, 92, 4.0, TRUE, 'cv', NOW()),
-    (3, 1, 3, 90, 1.5, TRUE, 'cv', NOW()),
-    (4, 1, 4, 84, 1.0, FALSE, 'cv', NOW()),
-    (5, 1, 5, 82, 2.0, FALSE, 'cv', NOW()),
-    (6, 1, 6, 80, 3.0, FALSE, 'cv', NOW()),
-    (7, 1, 7, 94, 4.5, TRUE, 'cv', NOW()),
-    (8, 1, 8, 90, 4.0, TRUE, 'cv', NOW()),
-    (9, 1, 9, 91, 8.0, TRUE, 'cv', NOW()),
-    (10, 1, 10, 88, 8.0, FALSE, 'cv', NOW()),
-    (11, 1, 11, 90, 9.0, TRUE, 'cv', NOW()),
-    (12, 1, 12, 88, 9.0, FALSE, 'cv', NOW()),
-    (13, 1, 13, 86, 8.0, FALSE, 'cv', NOW()),
-    (14, 1, 14, 89, 10.0, FALSE, 'cv', NOW()),
-    (15, 1, 15, 91, 10.0, TRUE, 'cv', NOW()),
-    (16, 1, 16, 70, 6.0, FALSE, 'cv', NOW()),
-    (17, 1, 17, 83, 1.0, TRUE, 'cv', NOW()),
-    (18, 1, 18, 79, 1.0, FALSE, 'cv', NOW());`,
-  `INSERT INTO education VALUES
-    (1, 1, 'Birkbeck, University of London', 'Graduate Certificate', 'Statistical Data Science', 2020, 2021, 1, 'cv', NOW()),
-    (2, 1, 'Birkbeck, University of London', 'Affiliate Student', 'Calculus 1 & Statistics 1', 2020, 2020, 2, 'cv', NOW()),
-    (3, 1, 'University College London', 'MSc', 'International Public Policy', 2012, 2013, 3, 'cv', NOW()),
-    (4, 1, 'University of Reading', 'BA', 'Politics & International Relations', 2008, 2011, 4, 'cv', NOW());`,
-  `INSERT INTO project VALUES
-    (1, 1, 'Modern Data Stack Delivery', 'Delivered end-to-end data platform implementations from ingestion to serving across greenfield client projects.', NULL, NULL, 2026, NULL, 1, 'cv', NOW()),
-    (2, 1, 'AI Summarisation Pipelines', 'Built production summarisation flows with BigQuery ML and dbt-managed orchestration patterns.', NULL, NULL, 2026, NULL, 2, 'cv', NOW()),
-    (3, 1, 'Client Data Submission Automation', 'Designed automated validation, error classification, and bulk transformation pipelines for client data delivery.', NULL, NULL, 2026, NULL, 3, 'cv', NOW()),
-    (4, 1, 'Warehouse Performance & Cost Optimisation', 'Implemented Snowflake workload segmentation and reliability controls for Looker user groups.', NULL, NULL, 2023, 2025, 4, 'cv', NOW());`,
-  `INSERT INTO project_skill VALUES
-    (1, 1, 1, 'cv', NOW()),
-    (2, 1, 3, 'cv', NOW()),
-    (3, 1, 5, 'cv', NOW()),
-    (4, 1, 6, 'cv', NOW()),
-    (5, 1, 7, 'cv', NOW()),
-    (6, 1, 15, 'cv', NOW()),
-    (7, 2, 3, 'cv', NOW()),
-    (8, 2, 7, 'cv', NOW()),
-    (9, 2, 11, 'cv', NOW()),
-    (10, 2, 12, 'cv', NOW()),
-    (11, 2, 17, 'cv', NOW()),
-    (12, 2, 18, 'cv', NOW()),
-    (13, 3, 1, 'cv', NOW()),
-    (14, 3, 5, 'cv', NOW()),
-    (15, 3, 6, 'cv', NOW()),
-    (16, 3, 11, 'cv', NOW()),
-    (17, 3, 12, 'cv', NOW()),
-    (18, 4, 2, 'cv', NOW()),
-    (19, 4, 8, 'cv', NOW()),
-    (20, 4, 9, 'cv', NOW()),
-    (21, 4, 14, 'cv', NOW());`,
-  `CREATE OR REPLACE VIEW stg__profile_overview AS
+
+  `CREATE TABLE social_profile (
+    id             INTEGER PRIMARY KEY,
+    person_id      INTEGER NOT NULL,
+    platform       VARCHAR NOT NULL,   -- 'GitHub' | 'LinkedIn'
+    url            VARCHAR NOT NULL,
+    handle         VARCHAR,
+    display_order  INTEGER NOT NULL,
+    FOREIGN KEY (person_id) REFERENCES person(id)
+  );`,
+
+  `CREATE TABLE employer (
+    id             INTEGER PRIMARY KEY,
+    name           VARCHAR NOT NULL,
+    website        VARCHAR,
+    location       VARCHAR,
+    industry       VARCHAR
+  );`,
+
+  `CREATE TABLE role (
+    id              INTEGER PRIMARY KEY,
+    person_id       INTEGER NOT NULL,
+    employer_id     INTEGER NOT NULL,
+    title           VARCHAR NOT NULL,
+    employment_type VARCHAR NOT NULL,  -- 'Full-time' | 'Contract' | 'Part-time'
+    start_date      DATE NOT NULL,     -- always first-of-month
+    end_date        DATE,              -- NULL when is_current = true
+    is_current      BOOLEAN NOT NULL DEFAULT FALSE,
+    summary         VARCHAR NOT NULL,
+    display_order   INTEGER NOT NULL,
+    FOREIGN KEY (person_id)  REFERENCES person(id),
+    FOREIGN KEY (employer_id) REFERENCES employer(id)
+  );`,
+
+  `CREATE TABLE role_achievement (
+    id               INTEGER PRIMARY KEY,
+    role_id          INTEGER NOT NULL,
+    achievement_text VARCHAR NOT NULL,
+    display_order    INTEGER NOT NULL,
+    FOREIGN KEY (role_id) REFERENCES role(id)
+  );`,
+
+  `CREATE TABLE skill_category (
+    id             INTEGER PRIMARY KEY,
+    name           VARCHAR NOT NULL,
+    display_order  INTEGER NOT NULL
+  );`,
+
+  `CREATE TABLE skill (
+    id               INTEGER PRIMARY KEY,
+    skill_category_id INTEGER NOT NULL,
+    name             VARCHAR NOT NULL,
+    display_order    INTEGER NOT NULL,
+    FOREIGN KEY (skill_category_id) REFERENCES skill_category(id)
+  );`,
+
+  // Person-level skill record: years of experience + whether it's a highlighted/core skill.
+  // Proficiency as a percentage is deliberately omitted — it's a made-up number that means nothing
+  // to a reader. Instead we surface years_experience (real) and roles_used_in (derived from role_skill).
+  `CREATE TABLE person_skill (
+    id               INTEGER PRIMARY KEY,
+    person_id        INTEGER NOT NULL,
+    skill_id         INTEGER NOT NULL,
+    years_experience DECIMAL(4,1) NOT NULL,
+    highlighted      BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (person_id) REFERENCES person(id),
+    FOREIGN KEY (skill_id)  REFERENCES skill(id)
+  );`,
+
+  // KEY ADDITION: which skills were used in which role
+  `CREATE TABLE role_skill (
+    id        INTEGER PRIMARY KEY,
+    role_id   INTEGER NOT NULL,
+    skill_id  INTEGER NOT NULL,
+    FOREIGN KEY (role_id)  REFERENCES role(id),
+    FOREIGN KEY (skill_id) REFERENCES skill(id)
+  );`,
+
+  `CREATE TABLE education (
+    id             INTEGER PRIMARY KEY,
+    person_id      INTEGER NOT NULL,
+    institution    VARCHAR NOT NULL,
+    credential     VARCHAR NOT NULL,
+    field_of_study VARCHAR,
+    start_year     INTEGER,
+    end_year       INTEGER,
+    display_order  INTEGER NOT NULL,
+    FOREIGN KEY (person_id) REFERENCES person(id)
+  );`,
+
+  `CREATE TABLE certification (
+    id                  INTEGER PRIMARY KEY,
+    person_id           INTEGER NOT NULL,
+    certification_name  VARCHAR NOT NULL,
+    issuer              VARCHAR NOT NULL,
+    issue_year          INTEGER,
+    credential_url      VARCHAR,
+    display_order       INTEGER NOT NULL,
+    FOREIGN KEY (person_id) REFERENCES person(id)
+  );`,
+
+  `CREATE TABLE project (
+    id             INTEGER PRIMARY KEY,
+    person_id      INTEGER NOT NULL,
+    name           VARCHAR NOT NULL,
+    description    VARCHAR NOT NULL,
+    repo_url       VARCHAR,
+    demo_url       VARCHAR,
+    start_year     INTEGER,
+    end_year       INTEGER,
+    display_order  INTEGER NOT NULL,
+    FOREIGN KEY (person_id) REFERENCES person(id)
+  );`,
+
+  `CREATE TABLE project_skill (
+    id         INTEGER PRIMARY KEY,
+    project_id INTEGER NOT NULL,
+    skill_id   INTEGER NOT NULL,
+    FOREIGN KEY (project_id) REFERENCES project(id),
+    FOREIGN KEY (skill_id)   REFERENCES skill(id)
+  );`,
+
+  // Renamed from publication_or_talk; role_id added so context is preserved
+  `CREATE TABLE talk_or_article (
+    id               INTEGER PRIMARY KEY,
+    person_id        INTEGER NOT NULL,
+    role_id          INTEGER,           -- optional: which role were you in when this happened?
+    kind             VARCHAR NOT NULL,  -- 'talk' | 'article' | 'podcast'
+    title            VARCHAR NOT NULL,
+    venue            VARCHAR,
+    publication_year INTEGER,
+    url              VARCHAR,
+    display_order    INTEGER NOT NULL,
+    FOREIGN KEY (person_id) REFERENCES person(id),
+    FOREIGN KEY (role_id)   REFERENCES role(id)
+  );`,
+
+  // ──────────────────────────────────────────────────────────────
+  // SEED DATA  (loaded from CSV files in public/seeds/)
+  // In development DuckDB-WASM reads the CSVs directly via fetch.
+  // In the dbt project, run `dbt seed` to load these into DuckDB.
+  // ──────────────────────────────────────────────────────────────
+  // Tables are populated by loadSeedsFromCsv() in lib/db.ts.
+  // The CREATE TABLE statements above remain; INSERTs are gone.
+  // ──────────────────────────────────────────────────────────────
+
+    // ─────────────────────────────────
+  // STAGING LAYER (stg__)
+  // Clean, typed, no business logic
+  // ─────────────────────────────────
+  `CREATE OR REPLACE VIEW stg__roles AS
+    SELECT
+      r.person_id,
+      r.id,
+      e.name           AS employer,
+      e.industry       AS employer_industry,
+      r.title,
+      r.employment_type,
+      r.start_date,
+      r.end_date,
+      r.is_current,
+      r.summary,
+      r.display_order  AS role_order
+    FROM role r
+    JOIN employer e ON e.id = r.employer_id;`,
+
+  `CREATE OR REPLACE VIEW stg__achievements AS
+    SELECT role_id, achievement_text, display_order
+    FROM role_achievement;`,
+
+  `CREATE OR REPLACE VIEW stg__skills AS
+    SELECT
+      ps.person_id,
+      sc.name           AS category,
+      s.name            AS skill,
+      s.id              AS skill_id,
+      ps.years_experience,
+      ps.highlighted,
+      sc.display_order  AS category_order,
+      s.display_order   AS skill_order
+    FROM person_skill ps
+    JOIN skill s  ON s.id = ps.skill_id
+    JOIN skill_category sc ON sc.id = s.skill_category_id;`,
+
+  `CREATE OR REPLACE VIEW stg__role_skills AS
+    SELECT
+      rs.role_id,
+      s.name           AS skill,
+      sc.name          AS category,
+      sc.display_order AS category_order,
+      s.display_order  AS skill_order
+    FROM role_skill rs
+    JOIN skill s  ON s.id = rs.skill_id
+    JOIN skill_category sc ON sc.id = s.skill_category_id;`,
+
+  `CREATE OR REPLACE VIEW stg__education AS
+    SELECT
+      person_id,
+      institution,
+      credential,
+      field_of_study,
+      start_year,
+      end_year,
+      display_order AS education_order
+    FROM education;`,
+
+  `CREATE OR REPLACE VIEW stg__projects AS
+    SELECT
+      p.person_id,
+      p.id,
+      p.name,
+      p.description,
+      p.repo_url,
+      p.demo_url,
+      p.start_year,
+      p.end_year,
+      p.display_order AS project_order
+    FROM project p;`,
+
+  `CREATE OR REPLACE VIEW stg__profile AS
     SELECT
       p.id AS person_id,
       p.full_name,
@@ -330,69 +268,17 @@ export const INIT_SQL: string[] = [
     FROM person p
     LEFT JOIN contact_method c ON c.person_id = p.id
     GROUP BY p.id, p.full_name, p.headline, p.location, p.summary, p.updated_at;`,
-  `CREATE OR REPLACE VIEW stg__experience_roles AS
-    SELECT
-      r.person_id,
-      r.id,
-      e.name AS employer,
-      r.title,
-      r.employment_type,
-      r.start_date,
-      r.end_date,
-      r.is_current,
-      r.summary,
-      r.display_order AS role_order
-    FROM role r
-    JOIN employer e ON e.id = r.employer_id;`,
-  `CREATE OR REPLACE VIEW stg__role_achievements AS
-    SELECT
-      role_id,
-      achievement_text,
-      display_order
-    FROM role_achievement;`,
-  `CREATE OR REPLACE VIEW stg__skills_inventory AS
-    SELECT
-      ps.person_id,
-      sc.name AS category,
-      s.name AS skill,
-      ps.proficiency,
-      ps.years_experience,
-      ps.highlighted,
-      sc.display_order AS category_order,
-      s.display_order AS skill_order
-    FROM person_skill ps
-    JOIN skill s ON s.id = ps.skill_id
-    JOIN skill_category sc ON sc.id = s.skill_category_id;`,
-  `CREATE OR REPLACE VIEW stg__education_history AS
-    SELECT
-      person_id,
-      institution,
-      credential,
-      field_of_study,
-      start_year,
-      end_year,
-      display_order AS education_order
-    FROM education;`,
-  `CREATE OR REPLACE VIEW stg__projects_inventory AS
-    SELECT
-      p.person_id,
-      p.id,
-      p.name,
-      p.description,
-      p.repo_url,
-      p.demo_url,
-      p.start_year,
-      p.end_year,
-      p.display_order AS project_order,
-      ps.skill_id
-    FROM project p
-    LEFT JOIN project_skill ps ON ps.project_id = p.id;`,
 
-  `CREATE OR REPLACE VIEW int__experience_rollup AS
+  // ─────────────────────────────────────────────
+  // INTERMEDIATE LAYER (int__)
+  // Business logic: rollups, tenure, skill scoring
+  // ─────────────────────────────────────────────
+  `CREATE OR REPLACE VIEW int__roles_with_achievements AS
     SELECT
       r.person_id,
       r.id,
       r.employer,
+      r.employer_industry,
       r.title,
       r.employment_type,
       r.start_date,
@@ -400,21 +286,74 @@ export const INIT_SQL: string[] = [
       r.is_current,
       r.summary,
       r.role_order,
-      list(a.achievement_text ORDER BY a.display_order) FILTER (WHERE a.achievement_text IS NOT NULL) AS achievements
-    FROM stg__experience_roles r
-    LEFT JOIN stg__role_achievements a ON a.role_id = r.id
-    GROUP BY
+      CASE
+        WHEN r.is_current THEN date_diff('month', r.start_date, current_date) + 1
+        ELSE date_diff('month', r.start_date, coalesce(r.end_date, current_date)) + 1
+      END AS tenure_months,
+      list(a.achievement_text ORDER BY a.display_order)
+        FILTER (WHERE a.achievement_text IS NOT NULL) AS achievements
+    FROM stg__roles r
+    LEFT JOIN stg__achievements a ON a.role_id = r.id
+    GROUP BY r.person_id, r.id, r.employer, r.employer_industry, r.title,
+             r.employment_type, r.start_date, r.end_date, r.is_current,
+             r.summary, r.role_order;`,
+
+  `CREATE OR REPLACE VIEW int__roles_with_skills AS
+    SELECT
       r.person_id,
       r.id,
       r.employer,
+      r.employer_industry,
       r.title,
       r.employment_type,
       r.start_date,
       r.end_date,
       r.is_current,
       r.summary,
-      r.role_order;`,
-  `CREATE OR REPLACE VIEW int__projects_rollup AS
+      r.role_order,
+      r.tenure_months,
+      r.achievements,
+      list({'skill': rs.skill, 'category': rs.category} ORDER BY rs.category_order, rs.skill_order)
+        FILTER (WHERE rs.skill IS NOT NULL) AS skills_used
+    FROM int__roles_with_achievements r
+    LEFT JOIN stg__role_skills rs ON rs.role_id = r.id
+    GROUP BY r.person_id, r.id, r.employer, r.employer_industry, r.title,
+             r.employment_type, r.start_date, r.end_date, r.is_current,
+             r.summary, r.role_order, r.tenure_months, r.achievements;`,
+
+  // Skills enriched with context derived entirely from real data (years + role count).
+  // skill_level is a human label derived from years_experience, not an arbitrary percentage.
+  `CREATE OR REPLACE VIEW int__skills_with_context AS
+    SELECT
+      s.person_id,
+      s.category,
+      s.skill,
+      s.skill_id,
+      s.years_experience,
+      s.highlighted,
+      s.category_order,
+      s.skill_order,
+      CASE
+        WHEN s.years_experience >= 8  THEN 'Expert'
+        WHEN s.years_experience >= 4  THEN 'Advanced'
+        WHEN s.years_experience >= 1.5 THEN 'Proficient'
+        ELSE 'Familiar'
+      END AS skill_level,
+      (
+        SELECT COUNT(DISTINCT rs.role_id)
+        FROM role_skill rs
+        WHERE rs.skill_id = s.skill_id
+      ) AS roles_used_in,
+      (
+        SELECT list(DISTINCT e.name ORDER BY e.name)
+        FROM role_skill rs
+        JOIN role r ON r.id = rs.role_id
+        JOIN employer e ON e.id = r.employer_id
+        WHERE rs.skill_id = s.skill_id
+      ) AS used_at_employers
+    FROM stg__skills s;`,
+
+  `CREATE OR REPLACE VIEW int__projects_with_skills AS
     SELECT
       p.person_id,
       p.id,
@@ -425,178 +364,100 @@ export const INIT_SQL: string[] = [
       p.start_year,
       p.end_year,
       p.project_order,
-      list(s.name ORDER BY s.display_order) FILTER (WHERE s.name IS NOT NULL) AS skills
-    FROM stg__projects_inventory p
-    LEFT JOIN skill s ON s.id = p.skill_id
-    GROUP BY
-      p.person_id,
-      p.id,
-      p.name,
-      p.description,
-      p.repo_url,
-      p.demo_url,
-      p.start_year,
-      p.end_year,
-      p.project_order;`,
-  `CREATE OR REPLACE VIEW int__skills_scored AS
-    SELECT
-      person_id,
-      category,
-      skill,
-      proficiency,
-      years_experience,
-      highlighted,
-      category_order,
-      skill_order,
-      CASE
-        WHEN proficiency >= 90 THEN 'expert'
-        WHEN proficiency >= 75 THEN 'advanced'
-        WHEN proficiency >= 60 THEN 'intermediate'
-        ELSE 'working'
-      END AS skill_level
-    FROM stg__skills_inventory;`,
+      list(s.name ORDER BY sc.display_order, s.display_order)
+        FILTER (WHERE s.name IS NOT NULL) AS skills
+    FROM stg__projects p
+    LEFT JOIN project_skill ps ON ps.project_id = p.id
+    LEFT JOIN skill s ON s.id = ps.skill_id
+    LEFT JOIN skill_category sc ON sc.id = s.skill_category_id
+    GROUP BY p.person_id, p.id, p.name, p.description,
+             p.repo_url, p.demo_url, p.start_year, p.end_year, p.project_order;`,
 
-  `CREATE OR REPLACE VIEW dmn__profile_overview AS
-    SELECT * FROM stg__profile_overview;`,
-  `CREATE OR REPLACE VIEW dmn__experience_timeline AS
-    SELECT
-      person_id,
-      id,
-      employer,
-      title,
-      employment_type,
-      start_date,
-      end_date,
-      is_current,
-      summary,
-      role_order,
-      achievements,
-      CASE
-        WHEN is_current THEN date_diff('month', start_date, current_date) + 1
-        ELSE date_diff('month', start_date, coalesce(end_date, current_date)) + 1
-      END AS tenure_months
-    FROM int__experience_rollup;`,
-  `CREATE OR REPLACE VIEW dmn__skills_matrix AS
-    SELECT * FROM int__skills_scored;`,
-  `CREATE OR REPLACE VIEW dmn__education_history AS
-    SELECT * FROM stg__education_history;`,
-  `CREATE OR REPLACE VIEW dmn__projects_showcase AS
-    SELECT * FROM int__projects_rollup;`,
+  // ─────────────────────────────────────────
+  // MART LAYER (mart__)
+  // Replaces old dmn__ + prs__ split
+  // Single clean view per business concept
+  // ─────────────────────────────────────────
+  `CREATE OR REPLACE VIEW mart__profile AS
+    SELECT * FROM stg__profile;`,
 
-  `CREATE OR REPLACE VIEW prs__dashboard_profile AS
+  `CREATE OR REPLACE VIEW mart__timeline AS
+    SELECT * FROM int__roles_with_skills ORDER BY role_order;`,
+
+  `CREATE OR REPLACE VIEW mart__skills AS
+    SELECT * FROM int__skills_with_context ORDER BY category_order, skill_order;`,
+
+  `CREATE OR REPLACE VIEW mart__education AS
     SELECT
-      person_id,
-      full_name,
-      headline,
-      location,
-      summary,
-      contact_methods,
-      social_profiles,
-      updated_at
-    FROM dmn__profile_overview;`,
-  `CREATE OR REPLACE VIEW prs__dashboard_experience AS
-    SELECT
-      person_id,
-      id,
-      employer,
-      title,
-      employment_type,
-      start_date,
-      end_date,
-      is_current,
-      summary,
-      achievements,
-      tenure_months,
-      role_order
-    FROM dmn__experience_timeline;`,
-  `CREATE OR REPLACE VIEW prs__dashboard_skills AS
-    SELECT
-      person_id,
-      category,
-      skill,
-      proficiency,
-      years_experience,
-      highlighted,
-      skill_level,
-      category_order,
-      skill_order
-    FROM dmn__skills_matrix;`,
-  `CREATE OR REPLACE VIEW prs__dashboard_education AS
-    SELECT
-      person_id,
-      institution,
-      credential,
-      field_of_study,
-      start_year,
-      end_year,
-      education_order
-    FROM dmn__education_history;`,
-  `CREATE OR REPLACE VIEW prs__dashboard_projects AS
-    SELECT
-      person_id,
-      id,
-      name,
-      description,
-      repo_url,
-      demo_url,
-      start_year,
-      end_year,
-      skills,
-      project_order
-    FROM dmn__projects_showcase;`,
-  `CREATE OR REPLACE VIEW prs__master_cv AS
+      e.*,
+      c.certification_name,
+      c.issuer,
+      c.issue_year,
+      c.credential_url
+    FROM stg__education e
+    FULL OUTER JOIN certification c ON c.person_id = e.person_id
+    ORDER BY e.education_order NULLS LAST;`,
+
+  `CREATE OR REPLACE VIEW mart__projects AS
+    SELECT * FROM int__projects_with_skills ORDER BY project_order;`,
+
+  `CREATE OR REPLACE VIEW mart__cv AS
     SELECT
       p.person_id,
       {
         'person': {
-          'name': p.full_name,
+          'name':     p.full_name,
           'headline': p.headline,
           'location': p.location,
-          'summary': p.summary
+          'summary':  p.summary
         },
         'contact_methods': p.contact_methods,
         'social_profiles': p.social_profiles,
         'experience': (
           SELECT list({
-            'employer': e.employer,
-            'title': e.title,
+            'employer':        e.employer,
+            'title':           e.title,
             'employment_type': e.employment_type,
-            'start_date': CAST(e.start_date AS VARCHAR),
-            'end_date': CASE WHEN e.is_current THEN 'Present' ELSE CAST(e.end_date AS VARCHAR) END,
-            'is_current': e.is_current,
-            'summary': e.summary,
-            'achievements': e.achievements
+            'start_date':      CAST(e.start_date AS VARCHAR),
+            'end_date':        CASE WHEN e.is_current THEN 'Present' ELSE CAST(e.end_date AS VARCHAR) END,
+            'is_current':      e.is_current,
+            'tenure_months':   e.tenure_months,
+            'summary':         e.summary,
+            'achievements':    e.achievements,
+            'skills_used':     e.skills_used
           } ORDER BY e.role_order)
-          FROM prs__dashboard_experience e
+          FROM mart__timeline e
           WHERE e.person_id = p.person_id
         ),
         'skills': (
           SELECT list({
-            'category': s.category,
-            'skill': s.skill,
-            'proficiency': s.proficiency,
+            'category':        s.category,
+            'skill':           s.skill,
             'years_experience': s.years_experience,
-            'highlighted': s.highlighted
+            'skill_level':     s.skill_level,
+            'highlighted':     s.highlighted,
+            'roles_used_in':   s.roles_used_in,
+            'used_at':         s.used_at_employers
           } ORDER BY s.category_order, s.skill_order)
-          FROM prs__dashboard_skills s
+          FROM mart__skills s
           WHERE s.person_id = p.person_id
         ),
         'education': (
           SELECT list({
-            'institution': e.institution,
-            'credential': e.credential,
+            'institution':    e.institution,
+            'credential':     e.credential,
             'field_of_study': e.field_of_study,
-            'start_year': e.start_year,
-            'end_year': e.end_year
-          } ORDER BY e.education_order)
-          FROM prs__dashboard_education e
+            'start_year':     e.start_year,
+            'end_year':       e.end_year
+          } ORDER BY e.education_order NULLS LAST)
+          FROM stg__education e
           WHERE e.person_id = p.person_id
         ),
         'certifications': (
           SELECT list({
-            'name': c.certification_name,
-            'issuer': c.issuer,
-            'issue_year': c.issue_year,
+            'name':           c.certification_name,
+            'issuer':         c.issuer,
+            'issue_year':     c.issue_year,
             'credential_url': c.credential_url
           } ORDER BY c.display_order)
           FROM certification c
@@ -604,132 +465,62 @@ export const INIT_SQL: string[] = [
         ),
         'projects': (
           SELECT list({
-            'name': pr.name,
+            'name':        pr.name,
             'description': pr.description,
-            'repo_url': pr.repo_url,
-            'demo_url': pr.demo_url,
-            'start_year': pr.start_year,
-            'end_year': pr.end_year,
-            'skills': pr.skills
+            'repo_url':    pr.repo_url,
+            'demo_url':    pr.demo_url,
+            'start_year':  pr.start_year,
+            'end_year':    pr.end_year,
+            'skills':      pr.skills
           } ORDER BY pr.project_order)
-          FROM prs__dashboard_projects pr
+          FROM mart__projects pr
           WHERE pr.person_id = p.person_id
-        ),
-        'talks': (
-          SELECT list({
-            'kind': t.kind,
-            'title': t.title,
-            'venue': t.venue,
-            'publication_year': t.publication_year,
-            'url': t.url
-          } ORDER BY t.display_order)
-          FROM publication_or_talk t
-          WHERE t.person_id = p.person_id
         ),
         'updated_at': CAST(p.updated_at AS VARCHAR)
       } AS cv
-    FROM prs__dashboard_profile p;`,
-  `CREATE OR REPLACE MACRO sp_joined_cv_snapshot(person_id_param) AS TABLE
-    WITH skill_inventory AS (
-      SELECT
-        s.person_id,
-        list({
-          'category': s.category,
-          'skill': s.skill,
-          'proficiency': s.proficiency,
-          'years_experience': s.years_experience,
-          'highlighted': s.highlighted
-        } ORDER BY s.category_order, s.skill_order) AS skills
-      FROM prs__dashboard_skills s
-      GROUP BY s.person_id
-    ),
-    project_inventory AS (
-      SELECT
-        p.person_id,
-        list({
-          'name': p.name,
-          'description': p.description,
-          'start_year': p.start_year,
-          'end_year': p.end_year,
-          'skills': p.skills
-        } ORDER BY p.project_order) AS projects
-      FROM prs__dashboard_projects p
-      GROUP BY p.person_id
-    ),
-    education_inventory AS (
-      SELECT
-        e.person_id,
-        list({
-          'institution': e.institution,
-          'credential': e.credential,
-          'field_of_study': e.field_of_study,
-          'start_year': e.start_year,
-          'end_year': e.end_year
-        } ORDER BY e.education_order) AS education
-      FROM prs__dashboard_education e
-      GROUP BY e.person_id
-    )
-    SELECT
-      p.person_id,
-      p.full_name,
-      p.headline,
-      p.location,
-      e.id AS role_id,
-      e.employer,
-      e.title AS role_title,
-      e.start_date,
-      e.end_date,
-      e.is_current,
-      e.summary AS role_summary,
-      e.achievements,
-      si.skills AS skill_inventory,
-      pi.projects AS project_inventory,
-      ei.education AS education_inventory
-    FROM prs__dashboard_profile p
-    LEFT JOIN prs__dashboard_experience e ON e.person_id = p.person_id
-    LEFT JOIN skill_inventory si ON si.person_id = p.person_id
-    LEFT JOIN project_inventory pi ON pi.person_id = p.person_id
-    LEFT JOIN education_inventory ei ON ei.person_id = p.person_id
-    WHERE p.person_id = person_id_param
-    ORDER BY e.role_order;`
+    FROM mart__profile p;`
 ];
 
+// ─────────────────────────────────────────────────
+// Schema table registry for the Data Explorer UI
+// Only mart__ views + source tables are surfaced.
+// stg__ and int__ are shown in File Explorer (models).
+// ─────────────────────────────────────────────────
 export const SCHEMA_TABLES: Array<{ name: string; description: string }> = [
-  { name: 'person', description: 'Root profile entity.' },
-  { name: 'contact_method', description: 'Email, website, and other contact channels.' },
-  { name: 'social_profile', description: 'Social handles and profile links.' },
-  { name: 'employer', description: 'Normalized employer dimension.' },
-  { name: 'role', description: 'Employment timeline with date precision and sort order.' },
-  { name: 'role_achievement', description: 'Role-specific impact statements.' },
-  { name: 'skill_category', description: 'Skill category taxonomy.' },
-  { name: 'skill', description: 'Individual skills within categories.' },
-  { name: 'person_skill', description: 'Skill proficiency for the person.' },
-  { name: 'education', description: 'Education records.' },
-  { name: 'certification', description: 'Certifications and credentials.' },
-  { name: 'project', description: 'Highlighted projects.' },
-  { name: 'project_skill', description: 'Project-to-skill mapping table.' },
-  { name: 'publication_or_talk', description: 'Optional talks and publications.' },
-  { name: 'query_catalog', description: 'Registered saved-query metadata snapshot.' },
-  { name: 'query_run_event', description: 'Execution telemetry for saved queries.' },
-  { name: 'stg__profile_overview', description: 'Staging model for profile, contact, and social data.' },
-  { name: 'stg__experience_roles', description: 'Staging model for role records with employer enrichment.' },
-  { name: 'stg__role_achievements', description: 'Staging model for normalized achievement statements.' },
-  { name: 'stg__skills_inventory', description: 'Staging model for skill inventory with category metadata.' },
-  { name: 'stg__education_history', description: 'Staging model for education entries.' },
-  { name: 'stg__projects_inventory', description: 'Staging model for projects and linked skills.' },
-  { name: 'int__experience_rollup', description: 'Intermediate model rolling achievements into each role.' },
-  { name: 'int__projects_rollup', description: 'Intermediate model rolling skills into each project.' },
-  { name: 'int__skills_scored', description: 'Intermediate model adding semantic skill levels.' },
-  { name: 'dmn__profile_overview', description: 'Domain model for person-level profile overview.' },
-  { name: 'dmn__experience_timeline', description: 'Domain model for role timeline with tenure metrics.' },
-  { name: 'dmn__skills_matrix', description: 'Domain model for skills and capability depth.' },
-  { name: 'dmn__education_history', description: 'Domain model for education records.' },
-  { name: 'dmn__projects_showcase', description: 'Domain model for project highlights.' },
-  { name: 'prs__dashboard_profile', description: 'Presentation model for dashboard hero/profile state.' },
-  { name: 'prs__dashboard_experience', description: 'Presentation model for dashboard timeline widgets.' },
-  { name: 'prs__dashboard_skills', description: 'Presentation model for dashboard skill visualizations.' },
-  { name: 'prs__dashboard_education', description: 'Presentation model for dashboard education widgets.' },
-  { name: 'prs__dashboard_projects', description: 'Presentation model for dashboard project widgets.' },
-  { name: 'prs__master_cv', description: 'Presentation model for the stable JSON CV contract.' },
-  { name: 'sp_joined_cv_snapshot', description: 'Semantic-layer macro returning a joined CV dataset.' }
+  // Source tables
+  { name: 'person',           description: 'Root profile entity — one row per person.' },
+  { name: 'contact_method',   description: 'Email, phone, and website contact channels.' },
+  { name: 'social_profile',   description: 'GitHub, LinkedIn, and other social handles.' },
+  { name: 'employer',         description: 'Normalised employer dimension with industry.' },
+  { name: 'role',             description: 'Employment timeline — one row per job.' },
+  { name: 'role_achievement', description: 'Bullet-point achievements per role.' },
+  { name: 'role_skill',       description: 'Skills actually used in each role.' },
+  { name: 'skill_category',   description: 'Skill groupings (e.g. Warehousing, AI).' },
+  { name: 'skill',            description: 'Individual skills within categories.' },
+  { name: 'person_skill',     description: 'Overall proficiency and experience per skill.' },
+  { name: 'education',        description: 'Degrees and academic credentials.' },
+  { name: 'certification',    description: 'Professional certifications.' },
+  { name: 'project',          description: 'Portfolio and side projects.' },
+  { name: 'project_skill',    description: 'Skills used per project.' },
+  { name: 'talk_or_article',  description: 'Talks, articles, and podcasts.' },
+  // Staging models
+  { name: 'stg__profile',          description: 'Staged profile with contact and social arrays.' },
+  { name: 'stg__roles',            description: 'Cleaned role records joined to employer.' },
+  { name: 'stg__achievements',     description: 'Normalised achievement bullet points.' },
+  { name: 'stg__skills',           description: 'Person-level skills with category metadata.' },
+  { name: 'stg__role_skills',      description: 'Skills per role joined to skill metadata.' },
+  { name: 'stg__education',        description: 'Cleaned education entries.' },
+  { name: 'stg__projects',         description: 'Project records with ordering.' },
+  // Intermediate models
+  { name: 'int__roles_with_achievements', description: 'Roles with achievements rolled up and tenure calculated.' },
+  { name: 'int__roles_with_skills',       description: 'Roles enriched with skills_used array.' },
+  { name: 'int__skills_with_context',     description: 'Skills enriched with level, employer context, and role count.' },
+  { name: 'int__projects_with_skills',    description: 'Projects enriched with linked skills array.' },
+  // Mart views
+  { name: 'mart__profile',    description: 'Mart: person profile for dashboard hero card.' },
+  { name: 'mart__timeline',   description: 'Mart: career timeline with achievements and skills per role.' },
+  { name: 'mart__skills',     description: 'Mart: skills matrix with proficiency, level, and employer context.' },
+  { name: 'mart__education',  description: 'Mart: education and certifications combined.' },
+  { name: 'mart__projects',   description: 'Mart: projects with linked skills.' },
+  { name: 'mart__cv',         description: 'Mart: stable JSON CV contract consumed by the Export tab.' },
 ];

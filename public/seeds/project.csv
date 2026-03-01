@@ -1,0 +1,6 @@
+id,person_id,name,description,repo_url,demo_url,start_year,end_year,display_order
+1,1,Modern Data Stack Delivery,Delivered end-to-end data platform implementations from ingestion to serving across greenfield client projects.,,, 2026,,1
+2,1,AI Summarisation Pipelines,Built production summarisation flows with BigQuery ML and dbt-managed orchestration patterns.,,,2026,,2
+3,1,Client Data Submission Automation,Designed automated validation error classification and bulk transformation pipelines for client data delivery.,,,2026,,3
+4,1,Warehouse Performance Optimisation,Implemented Snowflake workload segmentation and reliability controls for Looker user groups at The Orchard.,,,2023,2025,4
+5,1,CareerOS Portfolio Site,This site — an analytics engineer's CV built as a DuckDB-powered SQL data product running entirely in the browser.,https://github.com/andrewfindlay,https://www.andrewfindlay.io,2026,,5
