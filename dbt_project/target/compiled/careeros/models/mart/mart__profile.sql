@@ -1,0 +1,1 @@
+select * from "careeros"."main_staging"."stg__profile"

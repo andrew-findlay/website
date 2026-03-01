@@ -1,6 +1,7 @@
 import * as duckdb from '@duckdb/duckdb-wasm';
 import type { AsyncDuckDB, AsyncDuckDBConnection } from '@duckdb/duckdb-wasm';
 import { INIT_SQL } from '../data/schema';
+import { loadSeedsFromCsv } from './seedLoader';
 import type { QueryResult } from '../types';
 
 let db: AsyncDuckDB | null = null;
@@ -48,6 +49,9 @@ async function createDbConnection(): Promise<void> {
   for (const sql of INIT_SQL) {
     await conn.query(sql);
   }
+
+  // Load seed data from CSV files (replaces inline INSERT statements)
+  await loadSeedsFromCsv(db);
 }
 
 export async function initDB(): Promise<void> {

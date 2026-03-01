@@ -1,0 +1,28 @@
+name: careeros
+version: '1.0.0'
+config-version: 2
+
+profile: careeros
+
+model-paths: ["models"]
+seed-paths:  ["seeds"]
+test-paths:  ["tests"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  careeros:
+    staging:
+      +materialized: view
+      +schema: staging
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+    mart:
+      +materialized: view
+      +schema: mart
+
+seeds:
+  careeros:
+    +schema: raw

@@ -1,0 +1,15 @@
+careeros:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      # File is created in the dbt_project/ directory.
+      # The GitHub Action copies it to public/db/ after dbt run.
+      path: careeros.duckdb
+      threads: 4
+
+    # Optional: in-memory target for fast CI testing (no file written)
+    ci:
+      type: duckdb
+      path: ':memory:'
+      threads: 4

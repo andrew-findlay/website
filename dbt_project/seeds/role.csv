@@ -1,0 +1,7 @@
+id,person_id,employer_id,title,employment_type,start_date,end_date,is_current,summary,display_order
+1,1,1,Analytics Engineer,Contract,2025-07-01,,true,Implementing modern data stacks on greenfield client engagements covering ingestion transformation and serving layers.,1
+2,1,2,Analytics Engineer,Full-time,2023-03-01,2025-06-01,false,Led analytics engineering delivery across dbt Looker and Snowflake with a focus on reliability performance and stakeholder enablement.,2
+3,1,3,Senior Data Analyst,Full-time,2021-09-01,2022-09-01,false,Modernised analytics workflows with dbt while mentoring experimentation practice across the analytics team.,3
+4,1,3,Product Data Analyst,Full-time,2018-10-01,2021-09-01,false,Embedded experimentation and product analytics in cross-functional squads and replaced legacy spreadsheet reporting.,4
+5,1,4,Risk & Data Analyst,Full-time,2017-09-01,2018-09-01,false,Produced automated MI reporting supported board-level packs and improved lending scorecard operations.,5
+6,1,4,Performance Analyst,Full-time,2014-08-01,2018-09-01,false,Built KPI reporting benchmarking and performance scorecards for a network of subcontractors.,6

@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Seed tables loaded from CSV files via dbt seed.
+    schema: main_raw
+    tables:
+      - name: person
+      - name: contact_method
+      - name: social_profile
+      - name: employer
+      - name: role
+      - name: role_achievement
+      - name: skill_category
+      - name: skill
+      - name: person_skill
+      - name: role_skill
+      - name: education
+      - name: certification
+      - name: project
+      - name: project_skill

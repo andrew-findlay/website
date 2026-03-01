@@ -1,0 +1,58 @@
+name: Build DuckDB
+
+on:
+  push:
+    branches: [main]
+    paths:
+      # Re-run whenever CV content or model logic changes
+      - 'dbt_project/seeds/**.csv'
+      - 'dbt_project/models/**.sql'
+      - 'dbt_project/dbt_project.yml'
+
+  # Allow manual trigger from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write   # needed to commit the .duckdb file back
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dbt-duckdb
+        run: pip install dbt-duckdb
+
+      - name: dbt seed + run
+        working-directory: dbt_project
+        run: |
+          dbt deps          # no-op if no packages, safe to always run
+          dbt seed --profiles-dir .
+          dbt run  --profiles-dir .
+
+      - name: Export database to public/
+        working-directory: dbt_project
+        run: |
+          mkdir -p ../public/db
+          duckdb careeros.duckdb \
+            "EXPORT DATABASE '../public/db/careeros' (FORMAT PARQUET);"
+          # Also export a single .duckdb file the browser can fetch directly
+          cp careeros.duckdb ../public/db/careeros.duckdb
+
+      - name: Commit built database
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/db/careeros.duckdb
+          # Only commit if the file actually changed
+          git diff --staged --quiet || \
+            git commit -m "chore: rebuild careeros.duckdb [skip ci]"
+          git push

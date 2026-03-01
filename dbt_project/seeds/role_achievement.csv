@@ -1,0 +1,30 @@
+id,role_id,achievement_text,display_order
+1,1,Implemented modern data stack engagements from discovery to serving covering ingestion transformation and BI layers.,1
+2,1,Built AI-powered summarisation pipelines using BigQuery ML with LLM calls orchestrated through dbt.,2
+3,1,Optimised dbt models across BigQuery Snowflake and Microsoft Fabric to improve performance and reduce costs.,3
+4,1,Reviewed incremental model designs for large event datasets reducing identity resolution complexity.,4
+5,1,Designed automated client data submission workflows with validation error classification and bulk transformation.,5
+6,2,Introduced pull-request and review templates for dbt Cloud and Looker workflows improving governance and code quality.,1
+7,2,Implemented slim CI checks for all dbt pull requests reducing production defects.,2
+8,2,Co-led Snowflake warehouse segmentation for different Looker user groups reducing query queueing at stable cost.,3
+9,2,Introduced Datadog alerting for periods of heavy Snowflake load to improve warehouse reliability.,4
+10,2,Built datasets from MusicBrainz data landed in S3 expanding reusable external data assets for data science.,5
+11,2,Built datasets underpinning a new business review process reducing analyst time-to-analysis.,6
+12,2,Managed ingestion prioritisation between data engineering and analytics teams to improve delivery coordination.,7
+13,3,Implemented dbt to modernise and streamline analytics data workflows replacing ad-hoc SQL scripts.,1
+14,3,Mentored junior analysts on A/B testing methods raising statistical confidence in product decisions.,2
+15,3,Supported non-technical teams to upskill their experimentation processes improving trust in metrics.,3
+16,4,Implemented A/B testing as day-to-day practice within the product team enabling evidence-based iteration.,1
+17,4,Partnered with engineering to define product data capture standards improving instrumentation quality.,2
+18,4,Gathered stakeholder requirements and delivered Looker models and visualisations to improve reporting coverage.,3
+19,4,Co-administered Looker and maintained uptime and data quality targets increasing BI platform reliability.,4
+20,4,Moved product reporting away from spreadsheet-based legacy workflows reducing manual reporting dependency.,5
+21,4,Developed Monthly Active User reporting and helped define it as the North Star metric aligning product KPI strategy.,6
+22,5,Produced daily SQL MI for internal and external stakeholders delivering reliable recurring reporting.,1
+23,5,Contributed to company-wide data automation and rationalisation using SQL and VBA.,2
+24,5,Co-owned monthly board reporting packs including extraction narrative and process improvements.,3
+25,5,Identified issues in data warehouse feeds and coordinated supplier fixes improving data quality continuity.,4
+26,6,Produced monthly KPI and forecast reporting across 30+ subcontractors enhancing network performance visibility.,1
+27,6,Worked across teams to identify 20+ underperforming subcontractors and support remediation and exits.,2
+28,6,Led specification and rollout of bespoke quarterly subcontractor KPI reporting standardising stakeholder outputs.,3
+29,6,Introduced scorecard-based RAG monitoring for subcontractor performance creating a repeatable governance framework.,4
